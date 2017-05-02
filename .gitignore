@@ -20,6 +20,11 @@ gradle-app.setting
 
 # User-specific stuff:
 .idea
+build.xml
+manifest.mf
+nbproject
+dist
+build
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
