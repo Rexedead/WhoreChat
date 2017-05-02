@@ -20,10 +20,15 @@ public class Main extends Application {
     public static void main(String[] args) {
         try{
             for (String arg : args) {
-                arg.equalsIgnoreCase("-s"); // Проверка аргумента запуска. Проверка на ошибку сделана для предотвращения краша программы при пустом массиве
-            }                               // args(отсутствие аргументов запуска).
+                if(arg.equalsIgnoreCase("-s")){ // Проверка аргумента запуска. Проверка на ошибку сделана для предотвращения краша программы при пустом массиве
+                    break;                      // args(отсутствие аргументов запуска).
+                }       
+            }
+            
         }catch(NullPointerException e){
-            launch(args);                   //В случае отсутствия аргументов запуска запускать GUI
+            launch(args);                       //В случае отсутствия аргументов запуска запускать GUI
+        }finally{
+            new NullPointerException();
         }
         
     }
