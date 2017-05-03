@@ -4,9 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
@@ -53,9 +59,6 @@ public class Controller {
     private CheckBox CWSOptionButton;
     
     public void initialize(URL location, ResourceBundle resources) throws IOException{
-//        client = new Client();
-//        client.run();
-        if(connectWithStart){new Thread(messageUpdater()).start();}
         
     }
     
@@ -63,10 +66,39 @@ public class Controller {
         while(true){
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String answer = in.readLine();
-            System.out.println(answer);
+            
             return null;
         }
     }
     
+    public void connect(){
+        ConnectButton.setDisable(true);
+        String socket = SocketInputArea.getText();
+        connect(socket.substring(0, socket.lastIndexOf(":") - 1), 
+                Integer.parseInt(socket.substring(socket.lastIndexOf(":") + 1)));
+    }
+    public void connect(String serverAddress, int serverPort){
+        ConnectButton.setDisable(true);
+        try {
+            InetAddress ipAddress = InetAddress.getByName(serverAddress);
+            connection = new Socket(ipAddress, serverPort);
+            new Thread(messageUpdater()).start();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void sendMessage(){
+        try {
+            out = new PrintWriter(connection.getOutputStream());
+            out.println(SendTextArea.getText());
+            out.flush();
+            out.close();
+        } catch (IOException ex) {
+            System.out.println("Error #3: ");
+        }
+    }
     
 }
