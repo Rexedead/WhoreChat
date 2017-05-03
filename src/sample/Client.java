@@ -23,7 +23,7 @@ public class Client implements Runnable {
 //                    out =new ObjectOutputStream(connection.getOutputStream());
 //                    in = new ObjectInputStream(connection.getInputStream());
 //                    out.writeObject("Recieved!");
-
+//
                     BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String answer = input.readLine();
                     System.out.println(answer);
