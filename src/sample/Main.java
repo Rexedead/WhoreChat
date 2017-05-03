@@ -18,16 +18,13 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        args[0] = "-s";
             for(String arg:args){
-                if(arg.equalsIgnoreCase("-s")){
+                if(arg.equalsIgnoreCase("-s")){     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
                     System.out.println("Сервер");
                     // Здесь запускаем сервер в новом потоке!!!
-                    return;
+                    return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
                 }
             }
             launch(args);                       
-        
-        
     }
 }
