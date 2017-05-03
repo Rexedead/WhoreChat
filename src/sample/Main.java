@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
@@ -18,13 +18,16 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-            for(String arg:args){
-                if(arg.equalsIgnoreCase("-s")){     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
-                    System.out.println("Сервер");
-                    // Здесь запускаем сервер в новом потоке!!!
-                    return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
-                }
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("-s")) {     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
+                System.out.println("Сервер");
+                // Здесь запускаем сервер в новом потоке!!!
+                return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
             }
-            launch(args);                       
+        }
+        Client client = new Client();
+        client.run();
+        launch(args);
+
     }
 }

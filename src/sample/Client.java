@@ -1,8 +1,6 @@
 package sample;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -15,10 +13,6 @@ public class Client implements Runnable {
     private static String serverAddress = "127.0.0.1";
     private static int serverPort = 2283;
 
-    public static void main(String[] args) {
-
-    }
-
     @Override
     public void run() {
         try {
@@ -26,9 +20,15 @@ public class Client implements Runnable {
             try {
                 connection = new Socket(ipAddress, serverPort);
                 while (true){
-                    out =new ObjectOutputStream(connection.getOutputStream());
-                    in = new ObjectInputStream(connection.getInputStream());
-                    System.out.println("");
+//                    out =new ObjectOutputStream(connection.getOutputStream());
+//                    in = new ObjectInputStream(connection.getInputStream());
+//                    out.writeObject("Recieved!");
+
+                    BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String answer = input.readLine();
+                    System.out.println(answer);
+
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
