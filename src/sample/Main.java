@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
@@ -24,7 +24,10 @@ public class Main extends Application {
                     new Server();                   // Здесь запускаем сервер
                     return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
                 }
-            }
-            launch(args);                       
+        }
+        Client client = new Client();
+        client.run();
+        launch(args);
+
     }
 }
