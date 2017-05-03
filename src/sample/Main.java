@@ -11,8 +11,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setTitle("Whore Chat");
+        primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
     }
 
@@ -25,8 +25,6 @@ public class Main extends Application {
                     return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
                 }
         }
-        Client client = new Client();
-        client.run();
         launch(args);
 
     }
