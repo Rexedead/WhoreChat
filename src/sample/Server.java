@@ -83,6 +83,23 @@ public class Server{
             while(true){
                 try {
                     message = in.readLine();                //Получаем сообщение клиента
+                    if(message.substring(0, 4).equals("/rcon")){
+                        switch(message.substring(5)){
+                            case("add"):
+                                break;
+                            case("delete"):
+                                break;
+                            case("nickname"):
+                                break;
+                            case("exit"):
+                                for(Client client: clients){
+                                    if(client.clientSocket == clientSocket){
+                                        clients.remove(client);
+                                    }
+                                }
+                                return;
+                        }
+                    }
                     for(Client client : clients){
                         client.out.println(message);        //Отправляем полученное сообщение всем клиентам на сервере
                     }
