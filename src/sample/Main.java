@@ -18,18 +18,16 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        try{
-            for (String arg : args) {
-                if(arg.equalsIgnoreCase("-s")){ // Проверка аргумента запуска. Проверка на ошибку сделана для предотвращения краша программы при пустом массиве
-                    break;                      // args(отсутствие аргументов запуска).
-                }       
+        args[0] = "-s";
+            for(String arg:args){
+                if(arg.equalsIgnoreCase("-s")){
+                    System.out.println("Сервер");
+                    // Здесь запускаем сервер в новом потоке!!!
+                    return;
+                }
             }
-            
-        }catch(NullPointerException e){
-            launch(args);                       //В случае отсутствия аргументов запуска запускать GUI
-        }finally{
-            new NullPointerException();
-        }
+            launch(args);                       
+        
         
     }
 }
