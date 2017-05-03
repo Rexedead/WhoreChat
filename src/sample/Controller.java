@@ -1,10 +1,14 @@
 package sample;
 
+<<<<<<< HEAD
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+=======
+import java.io.*;
+>>>>>>> Allan
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -59,7 +63,26 @@ public class Controller {
     private CheckBox CWSOptionButton;
     
     public void initialize(URL location, ResourceBundle resources) throws IOException{
+<<<<<<< HEAD
         
+=======
+        File file=new File("Conf.epic");
+       if (file.exists()){
+           BufferedReader epic=new BufferedReader(new FileReader(file));
+           String s;
+           while ((s = epic.readLine()) != null){
+               switch (s){
+                   
+               }
+
+
+           }
+       }
+       else {
+           file.createNewFile();
+       }
+
+>>>>>>> Allan
     }
     
     private String messageUpdater() throws IOException{
