@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<HBox fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <AnchorPane>
          <children>
@@ -20,7 +20,7 @@
                   <TextArea fx:id="MessageList" editable="false" prefHeight="370.0" prefWidth="400.0" />
                   <HBox>
                      <children>
-                        <TextField fx:id="SendTextArea" prefHeight="34.0" prefWidth="340.0" />
+                        <TextField fx:id="SendTextArea" onAction="#sendMessageViaKeyboard" prefHeight="34.0" prefWidth="340.0" />
                         <Button fx:id="SendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="36.0" prefWidth="60.0" text="Send" />
                      </children>
                   </HBox>
@@ -54,7 +54,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="200.0">
                            <children>
-                              <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" />
+                              <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" onAction="#autoFillServerIPPort" />
                               <Button fx:id="ConnectButton" layoutX="66.0" layoutY="49.0" mnemonicParsing="false" onAction="#connect" text="Connect" />
                               <CheckBox fx:id="CWSOptionButton" layoutX="15.0" layoutY="88.0" mnemonicParsing="false" text="Connect with start the app" />
                            </children>
