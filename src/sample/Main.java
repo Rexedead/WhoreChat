@@ -18,12 +18,14 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-            for(String arg:args){
-                if(arg.equalsIgnoreCase("-s")){     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
-                    new Server();                   // Здесь запускаем сервер
-                    return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
-                }
+        for(String arg:args){
+            if(arg.equalsIgnoreCase("-s")){     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
+                new Server();                   // Здесь запускаем сервер
+                return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
+            }
         }
+        Client client = new Client();
+        client.run();
         launch(args);
 
     }

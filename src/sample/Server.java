@@ -12,6 +12,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -69,7 +71,7 @@ public class Server{
                         new InputStreamReader(
                                 clientSocket.getInputStream()));
                 this.out = new PrintWriter(
-                        clientSocket.getOutputStream());
+                        clientSocket.getOutputStream(), true);
             } catch (IOException ex) {
                 System.out.println
         ("Error #3: input/output stream not responding.");
@@ -82,11 +84,12 @@ public class Server{
             System.out.println("Client "
                     + clientSocket.toString() 
                     + " cames now");                        //Оповещение о том, что клиент в зашел в чат(серверное)
+            out.println("\t\t\tYou are now online");
             String message = "";                            //Строка для сообщений клиента
             
             try {
                 while(true){
-                    message = in.readLine();                //Получаем сообщение клиента
+                    message = in.readLine();                                    //Получаем сообщение клиента
                     System.out.println(message);
                     try {
                         if(message.substring(0, 5).trim().equals("/rcon")){
@@ -101,14 +104,20 @@ public class Server{
                                     System.out.println("Exited");
                                     close();
                             }
+                        }else{
+                            for (Client client : clients) {
+                                client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
+                            }
                         }
                     } catch(StringIndexOutOfBoundsException e) {
-                    
+                        for (Client client : clients) {
+                            client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
+                        }
                     } catch (NullPointerException e) {
                         
                     }
-                    for(Client client : clients){
-                        client.out.println(message);        //Отправляем полученное сообщение всем клиентам на сервере
+                    for (Client client : clients) {
+                        client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
                     }
                 }
             } catch (IOException ex) {

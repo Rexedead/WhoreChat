@@ -11,7 +11,7 @@ public class Client implements Runnable {
     static private ObjectOutputStream out;
     static private ObjectInputStream in;
     private static String serverAddress = "127.0.0.1";
-    private static int serverPort = 2283;
+    private static int serverPort = 28960;
 
     @Override
     public void run() {

@@ -80,12 +80,13 @@ public class Controller {
             try {
                 in = new BufferedReader(                                        //Поток для получения данных с сервера
                         new InputStreamReader(connection.getInputStream()));
-                String answer = in.readLine();                                  //Сообщение с сервера записывается в строку
+                String answer = in.readLine();
                 if(answer == null){                                             //Если соббщение равно null, то делаем дисконнект, так как сервер более 
                     disconnect();                                               //не отвечает
                     break;
                 }
-                MessageList.appendText("\n" + answer);                          //Выводим полученное сообщение на экран
+                
+                MessageList.appendText(answer + "\n");                          //Выводим полученное сообщение на экран
             } catch(SocketException e) {
                 disconnect();
                 break;
