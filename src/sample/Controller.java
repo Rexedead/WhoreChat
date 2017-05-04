@@ -16,6 +16,7 @@ public class Controller {
     private boolean connectWithStart;
     private String serverAddress;
     private int serverPort;
+    Client client;
 
     @FXML
     private TextArea MessageList;
@@ -45,14 +46,7 @@ public class Controller {
     private CheckBox CWSOptionButton;
 
 
-    public void initialize() {
-
-        Client client = new Client();
-        client.connect();
-
-    }
-
-    private void setupProp() throws IOException {
+    public void initialize() throws FileNotFoundException, IOException {
         Properties properties = new Properties();
         String propFilename = "config.properties";
         inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
@@ -62,8 +56,6 @@ public class Controller {
         } else {
             throw new FileNotFoundException("property file '" + propFilename + "' not found in the classpath");
         }
-
-        // get the property value and print it out
         this.serverAddress = properties.getProperty("IP");
         this.serverPort = Integer.parseInt(properties.getProperty("port"));
         this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
@@ -72,19 +64,16 @@ public class Controller {
             connect(this.serverAddress, this.serverPort);
         }
     }
-
-    public void sendMessageViaKeyboard() {                                           //Метод отправки сообщения через Enter
-
-        SendTextArea.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {                     //TODO: отправляется только после второго нажатия
-                sendMessage(SendTextArea.getText());
-            }
-        });
+    
+    private void connect(String serverAddress, int serverPort){
+        client = new Client(serverAddress, serverPort);
+        if(client.isConnected()){
+            //Меняется кнопка
+        }
     }
 
     public void sendMessage() {
-
-        sendMessage(SendTextArea.getText());                             //Метод отправки сообщения кнопкой в GUI
+        client.sendMessage(SendTextArea.getText());                             //Метод отправки сообщения кнопкой в GUI
     }
 
     public void autoFillServerIPPort() {
