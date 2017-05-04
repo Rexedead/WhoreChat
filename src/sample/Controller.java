@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 
 public class Controller {
@@ -49,26 +48,27 @@ public class Controller {
 
     public void initialize() throws FileNotFoundException, IOException {
 
-        Properties properties = new Properties();
-        String propFilename = "config.properties";
-        inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
-
-        if (inputStream != null) {
-            properties.load(inputStream);
-        } else {
-            throw new FileNotFoundException("property file '" + propFilename + "' not found in the classpath");
-        }
-        this.serverAddress = properties.getProperty("IP");
-        this.serverPort = Integer.parseInt(properties.getProperty("port"));
-        this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
-        autoFillServerIPPort();
-
-        if (connectWithStart) {
-            connect(this.serverAddress, this.serverPort);
-        }
+//        Properties properties = new Properties();
+//        String propFilename = "config.properties";
+//        inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
+//
+//        if (inputStream != null) {
+//            properties.load(inputStream);
+//        } else {
+//            throw new FileNotFoundException("property file '" + propFilename + "' not found in the classpath");
+//        }
+//        this.serverAddress = properties.getProperty("IP");
+//        this.serverPort = Integer.parseInt(properties.getProperty("port"));
+//        this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
+//        autoFillServerIPPort();
+//
+//        if (connectWithStart) {
+//            connect(this.serverAddress, this.serverPort);
+//        }
         
         ConnectButton.setOnAction((ActionEvent event) -> {
-            connect(serverAddress, serverPort);
+            connect(SocketInputArea.getText().split(":")[0], 
+                    Integer.parseInt(SocketInputArea.getText().split(":")[1]));
         });
     }
     
@@ -78,9 +78,13 @@ public class Controller {
             ConnectButton.setDisable(true);
             new Thread(() -> {
                 try {
-                    MessageList.setText(client.messageUpdater());
+                    while(client.isConnected()){
+                        MessageList.appendText(client.messageUpdater() + "\n");
+                    }
+                    ConnectButton.setDisable(false);
+                    MessageList.appendText("Connection lost.");
                 } catch (IOException e) {
-                    MessageList.setText("IO error");
+                    MessageList.appendText("IO error\n");
                 }
             }).start();
         }

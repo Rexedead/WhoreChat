@@ -20,7 +20,7 @@
                   <TextArea fx:id="MessageList" editable="false" prefHeight="370.0" prefWidth="400.0" />
                   <HBox>
                      <children>
-                        <TextField fx:id="SendTextArea" onAction="#sendMessageViaKeyboard" prefHeight="34.0" prefWidth="340.0" />
+                        <TextField fx:id="SendTextArea" prefHeight="34.0" prefWidth="340.0" />
                         <Button fx:id="SendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="36.0" prefWidth="60.0" text="Send" />
                      </children>
                   </HBox>

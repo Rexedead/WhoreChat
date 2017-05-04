@@ -16,6 +16,8 @@ public class Client {
     public Client(String serverAddress, int serverPort) {
         try {
             this.connection = new Socket(serverAddress, serverPort);
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream())); //получаем смс с сервера
+            out = new PrintWriter(connection.getOutputStream(), true); //поток отправки сообщения
         } catch (IOException e) {
             System.out.println("Не удалось подключиться к серверу");
         }
@@ -33,18 +35,11 @@ public class Client {
     }
 
     public void sendMessage(String message) {
-        try {
-            out = new PrintWriter(connection.getOutputStream(), true); //поток отправки сообщения
-            out.println(message);  //отправка сообщения
-        } catch (IOException e) {
-            System.out.println("IO error");
-        }
-
-
+        out.println(message);
     }
 
     public String messageUpdater() throws IOException {
-        in = new BufferedReader(new InputStreamReader(connection.getInputStream())); //получаем смс с сервера
+        
         String message = in.readLine();     //выводим смс
         return message;
     }
