@@ -45,7 +45,10 @@ public class Server{
         while(true){
             try {
                 Socket serverUser = server.accept();        //Сервер ждёт клиента
-                clients.add(new Client(serverUser));        //Подключившийся клиент добавляется в массив клиентов
+                System.out.println("Client connected" + serverUser.toString());
+                Client client = new Client(serverUser);
+                clients.add(client);                        //Подключившийся клиент добавляется в массив клиентов
+                client.start();
             } catch (IOException ex) {
                 System.out.println
         ("Error #2: Can't connect client.");
@@ -62,10 +65,10 @@ public class Server{
         public Client(Socket clientSocket) throws IOException{
             this.clientSocket = clientSocket;
             try {
-                in = new BufferedReader(
+                this.in = new BufferedReader(
                         new InputStreamReader(
                                 clientSocket.getInputStream()));
-                out = new PrintWriter(
+                this.out = new PrintWriter(
                         clientSocket.getOutputStream());
             } catch (IOException ex) {
                 System.out.println
@@ -80,41 +83,45 @@ public class Server{
                     + clientSocket.toString() 
                     + " cames now");                        //Оповещение о том, что клиент в зашел в чат(серверное)
             String message = "";                            //Строка для сообщений клиента
-            while(true){
-                try {
+            
+            try {
+                while(true){
                     message = in.readLine();                //Получаем сообщение клиента
-                    if(message.substring(0, 4).equals("/rcon")){
-                        switch(message.substring(5)){
-                            case("add"):
-                                break;
-                            case("delete"):
-                                break;
-                            case("nickname"):
-                                break;
-                            case("exit"):
-                                for(Client client: clients){
-                                    if(client.clientSocket == clientSocket){
-                                        clients.remove(client);
-                                    }
-                                }
-                                return;
+                    System.out.println(message);
+                    try {
+                        if(message.substring(0, 5).trim().equals("/rcon")){
+                            switch(message.substring(6)){
+                                case("add"):
+                                    break;
+                                case("delete"):
+                                    break;
+                                case("nickname"):
+                                    break;
+                                case("exit"):
+                                    System.out.println("Exited");
+                                    close();
+                            }
                         }
+                    } catch(StringIndexOutOfBoundsException e) {
+                    
+                    } catch (NullPointerException e) {
+                        
                     }
                     for(Client client : clients){
                         client.out.println(message);        //Отправляем полученное сообщение всем клиентам на сервере
                     }
+                }
+            } catch (IOException ex) {
+                System.out.println
+    ("Error #4: Client connection lost.");
+            } finally {
+                try {
+                    close();
                 } catch (IOException ex) {
                     System.out.println
-        ("Error #4: server connection lost.");
-                } finally {
-                    try {
-                        close();
-                    } catch (IOException ex) {
-                        System.out.println
-        ("Error #5: can't close stream.");
-                    }
-                    
+    ("Error #5: can't close stream.");
                 }
+
             }
         }
         

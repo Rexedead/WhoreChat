@@ -20,9 +20,9 @@ public class Client implements Runnable {
             try {
                 connection = new Socket(ipAddress, serverPort);
                 while (true){
-                   out =new ObjectOutputStream(connection.getOutputStream());
-                   in = new ObjectInputStream(connection.getInputStream());
-                   out.writeObject("Recieved!");
+////                   out =new ObjectOutputStream(connection.getOutputStream());
+////                   in = new ObjectInputStream(connection.getInputStream());
+////                   out.writeObject("Recieved!");
 
                     BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String answer = input.readLine();
