@@ -28,6 +28,7 @@ public class Client {
         sendMessage("/rcon exit");
         in.close();
         out.close();
+        connection.close();
     }
 
     public boolean isConnected() {
@@ -39,8 +40,13 @@ public class Client {
     }
 
     public String messageUpdater() throws IOException {
-        
-        String message = in.readLine();     //выводим смс
+        String message;
+        message = in.readLine();
+        if(message == null){
+            disconnect();
+            message = "Connection lost";
+        }
+            
         return message;
     }
 }

@@ -78,13 +78,11 @@ public class Controller {
             ConnectButton.setDisable(true);
             new Thread(() -> {
                 try {
-                    while(client.isConnected()){
+                    while(true){
                         MessageList.appendText(client.messageUpdater() + "\n");
                     }
-                    ConnectButton.setDisable(false);
-                    MessageList.appendText("Connection lost.");
                 } catch (IOException e) {
-                    MessageList.appendText("IO error\n");
+                    ConnectButton.setDisable(false);
                 }
             }).start();
         }
