@@ -57,23 +57,44 @@ public class Controller {
     @FXML
     private CheckBox CWSOptionButton;
     
-    public void initialize(URL location, ResourceBundle resources) throws IOException{
-        File file=new File("Conf.epic");
-        if (file.exists()){
-           BufferedReader epic=new BufferedReader(new FileReader(file));
-           String s;
-           while ((s = epic.readLine()) != null){
-               switch (s){
-                   
-               }
-           }
-       }
-       else {
-           file.createNewFile();
-       }
+    public void initialize(URL location, ResourceBundle resources) throws IOException {
+        File file = new File("Conf.epic");
+        if (file.exists()) {    //проверка наличия файла
+            BufferedReader epic = new BufferedReader(new FileReader(file));
+            String s;
+            while ((s = epic.readLine()) != null) {  //проверка наличия стоки в файле
+                FileWriter fileWriter = new FileWriter(file, true);
+                if (s.contains("ip")) {
+                    continue;
+                } else {
+                    fileWriter.append("ip");
+                }
+                if (s.contains("port")){
+                    continue;
+                }
+                else {
+                    fileWriter.append("port");
+                }
+                if (s.contains("login")){
+                    continue;
+                }
+                else {
+                    fileWriter.append("login");
+                }
+                if (s.contains("pasword")){
+                    continue;
+                }
+                else {
+                    fileWriter.append("pasword");
+                }
 
-
+            }
+        } else {
+            file.createNewFile();
+        }
     }
+
+
     
     private void messageUpdater() throws IOException{
         while(true){
