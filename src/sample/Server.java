@@ -12,8 +12,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -85,8 +83,7 @@ public class Server{
                     + clientSocket.toString() 
                     + " cames now");                        //Оповещение о том, что клиент в зашел в чат(серверное)
             out.println("\t\t\tYou are now online");
-            String message = "";                            //Строка для сообщений клиента
-            
+            String message = "";                            //Строка для сообщений клиента           
             try {
                 while(true){
                     message = in.readLine();                                    //Получаем сообщение клиента
@@ -99,10 +96,12 @@ public class Server{
                                 case("delete"):
                                     break;
                                 case("nickname"):
+                                    
                                     break;
                                 case("exit"):
-                                    System.out.println("Exited");
+                                    out.println("You will disconnect");
                                     close();
+                                    break;
                             }
                         }else{
                             for (Client client : clients) {
@@ -115,9 +114,6 @@ public class Server{
                         }
                     } catch (NullPointerException e) {
                         
-                    }
-                    for (Client client : clients) {
-                        client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
                     }
                 }
             } catch (IOException ex) {
