@@ -11,7 +11,6 @@ public class Client {
     private Socket connection;
     private PrintWriter out;
     private BufferedReader in;
-    private Boolean isConnected = false;
 
     public Client(String serverAddress, int serverPort) {
         try {
@@ -29,7 +28,7 @@ public class Client {
     }
 
     public boolean isConnected() {
-        return isConnected;         //проверка на коннект
+        return connection.isConnected();         //проверка на коннект
     }
 
     public void sendMessage(String message) {
