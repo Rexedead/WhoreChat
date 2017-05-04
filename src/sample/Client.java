@@ -1,14 +1,12 @@
 package sample;
 
 
-import javafx.scene.input.KeyCode;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Properties;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,58 +15,6 @@ public class Client {
     private Socket connection;
     private PrintWriter out;
     private BufferedReader in;
-    InputStream inputStream;
-    private boolean connectWithStart;
-    private String serverAddress;
-    private int serverPort;
-
-    private void setupProp() throws IOException {
-        Properties properties = new Properties();
-        String propFilename = "config.properties";
-        inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
-
-        if (inputStream != null) {
-            properties.load(inputStream);
-        } else {
-            throw new FileNotFoundException("property file '" + propFilename + "' not found in the classpath");
-        }
-
-        // get the property value and print it out
-        this.serverAddress = properties.getProperty("IP");
-        this.serverPort = Integer.parseInt(properties.getProperty("port"));
-        this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
-        autoFillServerIPPort();
-        if(connectWithStart){
-            connect(this.serverAddress, this.serverPort);
-        }
-    }
-
-    private void messageUpdater() throws IOException {
-        while (true) {
-            try {
-                in = new BufferedReader(                                        //Поток для получения данных с сервера
-                        new InputStreamReader(connection.getInputStream()));
-                String answer = in.readLine();
-                if (answer == null) {                                             //Если соббщение равно null, то делаем дисконнект, так как сервер более
-                    disconnect();                                               //не отвечает
-                    break;
-                }
-
-                MessageList.appendText(answer + "\n");                          //Выводим полученное сообщение на экран
-            } catch (SocketException e) {
-                disconnect();
-                break;
-            }
-        }
-    }
-
-    public void disconnect() throws IOException {
-        sendMessage("/rcon exit");                                              //Отсылаем серверу каманду на отключение
-        MessageList.appendText("Error: Connection lost.\n");                    //Отображаем на экране что соединение прервано
-        ConnectButton.setDisable(false);                                        //Делаем кнопку Connect снова доступной
-        in.close();                                                             //Закрываем птоки чтения и записи
-        out.close();
-    }
 
     public void connect() {
         ConnectButton.setDisable(true);                                         //Делаем кнопку Connect недоступной
@@ -115,19 +61,14 @@ public class Client {
         }
     }
 
-    public void sendMessageViaKeyboard() {                                           //Метод отправки сообщения через Enter
-
-        SendTextArea.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {                     //TODO: отправляется только после второго нажатия
-                sendMessage(SendTextArea.getText());
-            }
-        });
+    public void disconnect() throws IOException {
+        sendMessage("/rcon exit");                                              //Отсылаем серверу каманду на отключение
+        MessageList.appendText("Error: Connection lost.\n");                    //Отображаем на экране что соединение прервано
+        ConnectButton.setDisable(false);                                        //Делаем кнопку Connect снова доступной
+        in.close();                                                             //Закрываем птоки чтения и записи
+        out.close();
     }
 
-    public void sendMessage() {
-
-        sendMessage(SendTextArea.getText());                             //Метод отправки сообщения кнопкой в GUI
-    }
 
     public void sendMessage(String message) {                                    //Метод отправки сообщения. Может быть использован для общения
         try {                                                                   //программы с сервером. Например для кнопки "Добавить в друзья"
@@ -142,9 +83,23 @@ public class Client {
         }
     }
 
+    private void messageUpdater() throws IOException {
+        while (true) {
+            try {
+                in = new BufferedReader(                                        //Поток для получения данных с сервера
+                        new InputStreamReader(connection.getInputStream()));
+                String answer = in.readLine();
+                if (answer == null) {                                             //Если соббщение равно null, то делаем дисконнект, так как сервер более
+                    disconnect();                                               //не отвечает
+                    break;
+                }
 
-    public void autoFillServerIPPort() {
-        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из conf.epic
+                MessageList.appendText(answer + "\n");                          //Выводим полученное сообщение на экран
+            } catch (SocketException e) {
+                disconnect();
+                break;
+            }
+        }
+
     }
-
 }
