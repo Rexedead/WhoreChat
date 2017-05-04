@@ -21,7 +21,7 @@ public class Controller {
     InputStream inputStream;
     private boolean connectWithStart;
     private String serverAddress;
-    private int serverPort = 28960;
+    private int serverPort;
 
 
     @FXML
@@ -58,18 +58,19 @@ public class Controller {
         String propFilename = "config.properties";
         inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
 
-        if (inputStream != null) {
+        if (inputStream != null) {                                                     //читаем из конфига
             properties.load(inputStream);
         } else {
             throw new FileNotFoundException("property file '" + propFilename + "' not found in the classpath");
         }
 
-        // get the property value and print it out
+        // get the property value
         this.serverAddress = properties.getProperty("IP");
         this.serverPort = Integer.parseInt(properties.getProperty("port"));
         this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
-        autoFillServerIPPort();
-        if(connectWithStart){
+        autoFillServerIPPort();                                                                //заполняем поле сервер:порт взятые из конфига
+        if(connectWithStart && serverAddress!=null){                                //если автоконнект=1, подключаемся к серверу по считанным данным из конфига
+            CWSOptionButton.setSelected(true);
             connect(this.serverAddress, this.serverPort);
         }
 
