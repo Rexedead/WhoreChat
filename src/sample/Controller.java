@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 
 public class Controller {
@@ -64,22 +66,23 @@ public class Controller {
         if (connectWithStart) {
             connect(this.serverAddress, this.serverPort);
         }
+        
+        ConnectButton.setOnAction((ActionEvent event) -> {
+            connect(serverAddress, serverPort);
+        });
     }
     
     private void connect(String serverAddress, int serverPort){
         client = new Client(serverAddress, serverPort);
         if(client.isConnected()){
             ConnectButton.setDisable(true);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        client.messageUpdater();
-                    } catch (IOException e) {
-                        System.out.println("IO error");
-                    }
+            new Thread(() -> {
+                try {
+                    MessageList.setText(client.messageUpdater());
+                } catch (IOException e) {
+                    MessageList.setText("IO error");
                 }
-            });
+            }).start();
         }
     }
 
