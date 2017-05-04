@@ -69,7 +69,17 @@ public class Controller {
     private void connect(String serverAddress, int serverPort){
         client = new Client(serverAddress, serverPort);
         if(client.isConnected()){
-            //Меняется кнопка
+            ConnectButton.setDisable(true);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        client.messageUpdater();
+                    } catch (IOException e) {
+                        System.out.println("IO error");
+                    }
+                }
+            });
         }
     }
 
@@ -78,6 +88,6 @@ public class Controller {
     }
 
     public void autoFillServerIPPort() {
-        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из conf.epic
+        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из propeties
     }
 }

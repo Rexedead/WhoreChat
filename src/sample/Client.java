@@ -1,10 +1,11 @@
 package sample;
 
 
-import java.io.*;
-import java.net.InetAddress;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client {
 
@@ -42,7 +43,7 @@ public class Client {
 
     }
 
-    private String messageUpdater() throws IOException {
+    public String messageUpdater() throws IOException {
         in = new BufferedReader(new InputStreamReader(connection.getInputStream())); //получаем смс с сервера
         String message = in.readLine();     //выводим смс
         return message;
