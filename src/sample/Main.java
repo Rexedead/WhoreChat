@@ -24,8 +24,8 @@ public class Main extends Application {
                 return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
             }
         }
-        Client client = new Client();
-        client.run();
+//        Client client = new Client();
+//        client.run();
         launch(args);
 
     }

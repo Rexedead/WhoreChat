@@ -152,9 +152,9 @@ public class Controller {
     
     public void sendMessage(String message){                                    //Метод отправки сообщения. Может быть использован для общения
         try {                                                                   //программы с сервером. Например для кнопки "Добавить в друзья"
-            out = new PrintWriter(connection.getOutputStream());                //Открываем поток для отправки сообщений
+            out = new PrintWriter(connection.getOutputStream(), true);                //Открываем поток для отправки сообщений
             out.println(message);                                               //Отправляем сообщение серверу
-            out.flush();                                                        //Принуждает выходной буфер отправить сообщение
+//            out.flush();                                                        //Принуждает выходной буфер отправить сообщение
         } catch (IOException ex) {
             System.out.println("Error #3: ");
         } catch(NullPointerException e) {

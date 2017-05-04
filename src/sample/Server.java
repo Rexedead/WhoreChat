@@ -99,10 +99,12 @@ public class Server{
                                 case("delete"):
                                     break;
                                 case("nickname"):
+                                    
                                     break;
                                 case("exit"):
-                                    System.out.println("Exited");
+                                    out.println("You will disconnect");
                                     close();
+                                    break;
                             }
                         }else{
                             for (Client client : clients) {
@@ -115,9 +117,6 @@ public class Server{
                         }
                     } catch (NullPointerException e) {
                         
-                    }
-                    for (Client client : clients) {
-                        client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
                     }
                 }
             } catch (IOException ex) {
