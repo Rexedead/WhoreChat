@@ -16,22 +16,10 @@ public class Client {
     public Client(String serverAddress, int serverPort) {
         try {
             this.connection = new Socket(serverAddress, serverPort);
-            connect(serverAddress,serverPort);
         } catch (IOException e) {
             System.out.println("Не удалось подключиться к серверу");
         }
 
-    }
-
-    public void connect(String serverAddress, int serverPort) {
-        try {
-            InetAddress ipAddress = InetAddress.getByName(serverAddress);       //Строка с адресом конвертируется в адрес для коннекта
-            this.connection = new Socket(ipAddress, serverPort);                //задаем адрес и порт для коннекта
-        } catch (UnknownHostException e) {
-            System.out.println("Хост не найден");
-        } catch (IOException e) {
-            System.out.println("IO error");
-        }
     }
 
     public void disconnect() throws IOException {
@@ -46,8 +34,8 @@ public class Client {
 
     public void sendMessage(String message) {
         try {
-            out = new PrintWriter(connection.getOutputStream()); //поток отправки сообщения
-            out.println();  //отправка сообщения
+            out = new PrintWriter(connection.getOutputStream(), true); //поток отправки сообщения
+            out.println(message);  //отправка сообщения
         } catch (IOException e) {
             System.out.println("IO error");
         }
