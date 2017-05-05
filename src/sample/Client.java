@@ -1,17 +1,17 @@
 package sample;
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Client {
 
     private Socket connection;
-    private PrintWriter out;
-    private BufferedReader in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+    private Message message;
     private boolean isConnected = false;
     
     public Client(){};
@@ -19,8 +19,8 @@ public class Client {
     public Client(String serverAddress, int serverPort) {
         try {
             this.connection = new Socket(serverAddress, serverPort);
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream())); //получаем смс с сервера
-            out = new PrintWriter(connection.getOutputStream(), true); //поток отправки сообщения
+            in = new ObjectInputStream(connection.getInputStream()); //получаем смс с сервера
+            out = new ObjectOutputStream(connection.getOutputStream()); //поток отправки сообщения
             isConnected = true;
         } catch (IOException e) {
             System.out.println("Не удалось подключиться к серверу");
@@ -29,28 +29,22 @@ public class Client {
     }
 
     public void disconnect() throws IOException {
-        sendMessage("/rcon exit");
+        sendMessage(new Message("exit", true, false));
         in.close();
         out.close();
         isConnected = false;
     }
 
-    public boolean isConnected() {
-        return isConnected;         //проверка на коннект
+    public void sendMessage(Message message) throws IOException {
+        out.writeObject(message);
     }
 
-    public void sendMessage(String message) {
-        out.println(message);
+    public String messageUpdater() throws IOException, ClassNotFoundException {
+        message = (Message)in.readObject();            
+        return message.getMessage();
     }
 
-    public String messageUpdater() throws IOException {
-        String message;
-        message = in.readLine();
-        if(message == null){
-            disconnect();
-            message = "Connection lost";
-        }
-            
-        return message;
+    boolean isConnected() {
+        return isConnected;
     }
 }

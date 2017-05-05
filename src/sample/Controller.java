@@ -1,19 +1,14 @@
 package sample;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javax.xml.ws.handler.Handler;
 
 
 public class Controller {
@@ -23,6 +18,7 @@ public class Controller {
     private String serverAddress;
     private int serverPort;
     Client client = new Client();
+    private boolean isConnected = false; 
 
     @FXML
     private TextArea MessageList;
@@ -97,23 +93,30 @@ public class Controller {
     private void connect(String serverAddress, int serverPort){
         client = new Client(serverAddress, serverPort);
         if(client.isConnected()){
+            isConnected = true;
             ConnectButton.setDisable(true);
             new Thread(() -> {
                 try {
-                    while(client.isConnected()){
+                    while(true){
                         MessageList.appendText(client.messageUpdater() + "\n");
                     }
-                    ConnectButton.setDisable(false);
                 } catch (IOException e) {
-                    
+                    MessageList.appendText("Connection lost\n");
+                    ConnectButton.setDisable(false);
+                    isConnected = false;
+                } catch (ClassNotFoundException ex) {
+                    MessageList.appendText("Connection lost\n");
+                    ConnectButton.setDisable(false);
+                    isConnected = false;
                 }
             }).start();
         }
     }
 
-    public void sendMessage() {
-        if(client.isConnected()){
-            client.sendMessage(SendTextArea.getText());                             //Метод отправки сообщения кнопкой в GUI
+    public void sendMessage() throws IOException {
+        if(isConnected){
+            client.sendMessage(
+                    new Message(SendTextArea.getText(), false, false));                             //Метод отправки сообщения кнопкой в GUI
             SendTextArea.clear();
         }else{
             MessageList.appendText("You are not online\n");
