@@ -8,10 +8,14 @@ package sample;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -57,19 +61,18 @@ public class Server{
     }
     
     private class Client extends Thread{                    //Класс клиентов
-        private BufferedReader in = null;                   //Поток для чтения данных от клиента
-        private PrintWriter out = null;                     //Поток для отправки данных клиенту
+        private ObjectInputStream in = null;                   //Поток для чтения данных от клиента
+        private ObjectOutputStream out = null;                     //Поток для отправки данных клиенту
         private Socket clientSocket = null;                 //Сокет клиента
         private String nickname = null;                     //Ник клиента(Будет изменено когда подключим БД)
         
         public Client(Socket clientSocket) throws IOException{
             this.clientSocket = clientSocket;
             try {
-                this.in = new BufferedReader(
-                        new InputStreamReader(
-                                clientSocket.getInputStream()));
-                this.out = new PrintWriter(
-                        clientSocket.getOutputStream(), true);
+                
+                this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+                this.in = new ObjectInputStream(clientSocket.getInputStream());
+                        
             } catch (IOException ex) {
                 System.out.println
         ("Error #3: input/output stream not responding.");
@@ -81,36 +84,41 @@ public class Server{
         public void run(){
             System.out.println("Client "
                     + clientSocket.toString() 
-                    + " cames now");                        //Оповещение о том, что клиент в зашел в чат(серверное)
-            out.println("\t\t\tYou are now online");
-            String message = "";                            //Строка для сообщений клиента           
+                    + " cames now");                                            //Оповещение о том, что клиент в зашел в чат(серверное)
+            try {
+                out.writeObject(new Message("You are now online", false, false));
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Message message;                                                    //Строка для сообщений клиента           
             try {
                 while(true){
-                    message = in.readLine();                                    //Получаем сообщение клиента
+                    message = (Message) in.readObject();                                    //Получаем сообщение клиента
                     System.out.println(message);
                     try {
-                        if(message.substring(0, 5).trim().equals("/rcon")){
-                            switch(message.substring(6)){
+                        if(message.isSystem()){
+                            switch(message.getMessage()){
                                 case("add"):
                                     break;
                                 case("delete"):
                                     break;
                                 case("nickname"):
-                                    
+                                    break;
+                                case("Avatar"):
                                     break;
                                 case("exit"):
-                                    out.println("You will disconnect");
+                                    out.writeObject(new Message("You will disconnect", true, false));
                                     close();
                                     break;
                             }
                         }else{
                             for (Client client : clients) {
-                                client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
+                                client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
                             }
                         }
                     } catch(StringIndexOutOfBoundsException e) {
                         for (Client client : clients) {
-                            client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
+                            client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
                         }
                     } catch (NullPointerException e) {
                         
@@ -119,12 +127,15 @@ public class Server{
             } catch (IOException ex) {
                 System.out.println
     ("Error #4: Client connection lost.");
+            } catch (ClassNotFoundException ex) {
+                System.out.println
+        ("Error #5: Class not found.");
             } finally {
                 try {
                     close();
                 } catch (IOException ex) {
                     System.out.println
-    ("Error #5: can't close stream.");
+    ("Error #6: can't close stream.");
                 }
 
             }
@@ -133,6 +144,8 @@ public class Server{
         private void close() throws IOException{            //Метод для закрытия потоков чтения и записи клиента
             in.close();
             out.close();
+            clients.remove(this);
+            interrupt();
         }
     }
     
