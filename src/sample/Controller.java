@@ -1,5 +1,6 @@
 package sample;
 
+import java.awt.event.KeyEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -8,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javax.xml.ws.handler.Handler;
 
 
 public class Controller {
@@ -16,7 +20,7 @@ public class Controller {
     private boolean connectWithStart;
     private String serverAddress;
     private int serverPort;
-    Client client;
+    Client client = new Client();
 
     @FXML
     private TextArea MessageList;
@@ -70,6 +74,7 @@ public class Controller {
             connect(SocketInputArea.getText().split(":")[0], 
                     Integer.parseInt(SocketInputArea.getText().split(":")[1]));
         });
+        
     }
     
     private void connect(String serverAddress, int serverPort){
@@ -78,18 +83,24 @@ public class Controller {
             ConnectButton.setDisable(true);
             new Thread(() -> {
                 try {
-                    while(true){
+                    while(client.isConnected()){
                         MessageList.appendText(client.messageUpdater() + "\n");
                     }
-                } catch (IOException e) {
                     ConnectButton.setDisable(false);
+                } catch (IOException e) {
+                    
                 }
             }).start();
         }
     }
 
     public void sendMessage() {
-        client.sendMessage(SendTextArea.getText());                             //Метод отправки сообщения кнопкой в GUI
+        if(client.isConnected()){
+            client.sendMessage(SendTextArea.getText());                             //Метод отправки сообщения кнопкой в GUI
+            SendTextArea.clear();
+        }else{
+            MessageList.appendText("You are not online\n");
+        }
     }
 
     public void autoFillServerIPPort() {

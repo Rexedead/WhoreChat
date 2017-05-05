@@ -12,12 +12,16 @@ public class Client {
     private Socket connection;
     private PrintWriter out;
     private BufferedReader in;
+    private boolean isConnected = false;
+    
+    public Client(){};
 
     public Client(String serverAddress, int serverPort) {
         try {
             this.connection = new Socket(serverAddress, serverPort);
             in = new BufferedReader(new InputStreamReader(connection.getInputStream())); //получаем смс с сервера
             out = new PrintWriter(connection.getOutputStream(), true); //поток отправки сообщения
+            isConnected = true;
         } catch (IOException e) {
             System.out.println("Не удалось подключиться к серверу");
         }
@@ -29,10 +33,11 @@ public class Client {
         in.close();
         out.close();
         connection.close();
+        isConnected = false;
     }
 
     public boolean isConnected() {
-        return connection.isConnected();         //проверка на коннект
+        return isConnected;         //проверка на коннект
     }
 
     public void sendMessage(String message) {
