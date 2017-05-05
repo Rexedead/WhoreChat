@@ -1,12 +1,14 @@
 package sample;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Properties;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -52,23 +54,38 @@ public class Controller {
 
     public void initialize() throws FileNotFoundException, IOException {
 
-//        Properties properties = new Properties();
-//        String propFilename = "config.properties";
-//        inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
-//
-//        if (inputStream != null) {
-//            properties.load(inputStream);
-//        } else {
-//            throw new FileNotFoundException("property file '" + propFilename + "' not found in the classpath");
-//        }
-//        this.serverAddress = properties.getProperty("IP");
-//        this.serverPort = Integer.parseInt(properties.getProperty("port"));
-//        this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
-//        autoFillServerIPPort();
-//
-//        if (connectWithStart) {
-//            connect(this.serverAddress, this.serverPort);
-//        }
+        Properties properties = new Properties();
+        String propFilename = "config.properties";
+
+        inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
+
+        if (inputStream != null) {
+            try {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                MessageList.appendText("Файл конфигурации пустой или поврежден" + "\n");
+            }
+        } else {
+            try {
+                File propFile = new File("config.properties");
+                propFile.createNewFile();
+                PrintWriter propWriter = new PrintWriter(propFile);
+                propWriter.write("#Client Configuration");
+            } catch (IOException e) {
+                MessageList.appendText("Не удалось создать файл конфигурации" + "\n");
+            }
+        }
+        this.serverAddress = properties.getProperty("IP");
+        System.out.println(properties.getProperty("IP"));
+        this.serverPort = Integer.parseInt(properties.getProperty("port"));
+        System.out.println(properties.getProperty("port"));
+        this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
+        autoFillServerIPPort();
+
+        if (connectWithStart) {
+            connect(this.serverAddress, this.serverPort);
+        }
+
         
         ConnectButton.setOnAction((ActionEvent event) -> {
             connect(SocketInputArea.getText().split(":")[0], 

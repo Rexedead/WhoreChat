@@ -105,12 +105,12 @@ public class Server{
                             }
                         }else{
                             for (Client client : clients) {
-                                client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
+                                client.out.println(new String(message.getBytes("cp1251"))); //Отправляем полученное сообщение всем клиентам на сервере
                             }
                         }
                     } catch(StringIndexOutOfBoundsException e) {
                         for (Client client : clients) {
-                            client.out.println(message); //Отправляем полученное сообщение всем клиентам на сервере
+                            client.out.println(new String(message.getBytes("cp1251"))); //Отправляем полученное сообщение всем клиентам на сервере
                         }
                     } catch (NullPointerException e) {
                         
