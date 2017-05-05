@@ -32,7 +32,6 @@ public class Client {
         sendMessage("/rcon exit");
         in.close();
         out.close();
-        connection.close();
         isConnected = false;
     }
 

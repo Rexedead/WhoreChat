@@ -133,6 +133,8 @@ public class Server{
         private void close() throws IOException{            //Метод для закрытия потоков чтения и записи клиента
             in.close();
             out.close();
+            clients.remove(this);
+            interrupt();
         }
     }
     
