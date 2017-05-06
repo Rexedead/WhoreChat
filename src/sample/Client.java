@@ -14,7 +14,7 @@ public class Client {
     private Message message;
     private boolean isConnected = false;
     
-    public Client(){};
+    public Client(){}
 
     public Client(String serverAddress, int serverPort) {
         try {
