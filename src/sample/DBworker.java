@@ -8,38 +8,54 @@ public class DBworker {
     private String usernameSQL = "root";
     private String passwordSQL = "";
     private Connection connectionToSQLbase;
-    private Statement statement; //TODO: не забыть закрыть
+    private Statement statement;
     private ResultSet resultSet;
     private String idBackToRegisteredUser;
 
-    public String readFromSQLwhenLogining(String loginFromClient, String passwordFromClient) {
+
+    public DBworker() {
         try {
             connectionToSQLbase = DriverManager.getConnection(URL, usernameSQL, passwordSQL);
             statement = connectionToSQLbase.createStatement();
-            //если логин пасс найден возвращаем ид чувака иначе нал
-            resultSet = statement.executeQuery("select id from users where nickname = " + loginFromClient +"and password = "+ passwordFromClient);
+        } catch (SQLException e) {
+            System.out.println("Can't connect to Database");
+        }
+    }
+
+
+    public String readFromSQLwhenLogining(String loginFromClient, String passwordFromClient) {
+
+        try {
+            resultSet = statement.executeQuery("select id from users where " +
+                    "(nickname = '" + loginFromClient + "' and password = '" + passwordFromClient + "')");
             while (resultSet.next()) {
                 idBackToRegisteredUser = resultSet.getString("id");
             }
-        } catch (SQLException e) {
-            System.out.println("Can't connect to Database/Wrong SQL request");
+            resultSet.close();
+        } catch (SQLException e1) {
+            System.out.println("Wrong SQL request");
         }
+
         if (idBackToRegisteredUser != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                System.out.println("Cant close statement");
+            }
             return idBackToRegisteredUser;
+
         } else return null;
     }
 
     public void writeToSQLwhenRegister(ClientData clientDataRegistrationStrings) {
         try {
-            connectionToSQLbase = DriverManager.getConnection(URL, usernameSQL, passwordSQL);
-            statement = connectionToSQLbase.createStatement();
             String regNickame = clientDataRegistrationStrings.getNickName();
             String regMail = clientDataRegistrationStrings.geteMail();
             String regPassword = clientDataRegistrationStrings.getPassword();
-            resultSet = statement.executeQuery("insert into users (nickname,password,email) values ('"+regNickame+
-                    " ', ' "+regMail+ " ', '"+regPassword+"')");
+            statement.execute(    "insert into users (nickname, password, email ) values ('"+regNickame+"','"+regPassword+"','"+regMail+"')"   );
+            statement.close();
         } catch (SQLException e) {
-            System.out.println("Can't connect to Database");
+            System.out.println("Wrong SQL request");
         }
     }
 
