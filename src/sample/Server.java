@@ -91,7 +91,7 @@ public class Server{
             try {
                 while(true){
                     message = (Message) in.readObject();                                    //Получаем сообщение клиента
-                    System.out.println(message);
+                    System.out.println(message.getMessage());
                     try {
                         if(message.isSystem()){
                             switch(message.getMessage()){
