@@ -37,6 +37,8 @@ public class Server{
         try {
             server = new ServerSocket(PORT);                //Попытка запустить сервер на порте PORT
             System.out.println("Server online");
+            DBworker ddd = new DBworker();
+            System.out.println(ddd.readFromSQLwhenLogining("rexedead","111"));
         } catch (IOException ex) {
             System.out.println
         ("Error #1: Server offline.");
