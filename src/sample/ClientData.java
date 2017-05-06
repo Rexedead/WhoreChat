@@ -17,6 +17,7 @@ public class ClientData {
     private Image avatar;
     private String id;
     private String nickName;
+    private boolean singUp = false;
 
     public ClientData(String eMail, String password) {
         this.eMail = eMail;
@@ -34,12 +35,14 @@ public class ClientData {
         this.avatar = avatar;
         this.eMail = eMail;
         this.nickName = nickName;
+        singUp = true;
     }
 
     public ClientData(String password, String eMail, String nickName) {
         this.password = password;
         this.eMail = eMail;
         this.nickName = nickName;
+        singUp = true;
     }
 
     public String getPassword() {
@@ -48,6 +51,10 @@ public class ClientData {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isSingUp() {
+        return singUp;
     }
 
     public Image getAvatar() {

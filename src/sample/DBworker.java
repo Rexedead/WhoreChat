@@ -21,7 +21,14 @@ public class DBworker {
             System.out.println("Can't connect to Database");
         }
     }
-
+    
+    public String readFromSQLwhenLogining(String loginFromClient, String passwordFromClient) {
+        return null;
+    }
+    
+    public void writeToSQLwhenRegister(ClientData clientDataRegistrationStrings){
+        
+    }
 
     public String readFromSQLwhenLogining(String loginFromClient, String passwordFromClient) {
 

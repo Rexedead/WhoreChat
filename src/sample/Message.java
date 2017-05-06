@@ -7,6 +7,7 @@ package sample;
 
 import java.io.File;
 import java.io.Serializable;
+import javafx.scene.image.Image;
 
 /**
  *
@@ -14,21 +15,49 @@ import java.io.Serializable;
  */
 public class Message implements Serializable{
     private String message;
-    private boolean System;
-    private boolean File;
+    private String id;
+    MessageType MessageType;
     private File file;
+    private Image img;
 
-    public Message(String message, boolean System, boolean File, File file) {
-        this.message = message;
-        this.System = System;
-        this.File = File;
-        this.file = file;
+    public Message() {
+        this.MessageType = MessageType.EXIT;
     }
 
-    public Message(String message, boolean System, boolean File) {
+    public Message(String message, File file) {
         this.message = message;
-        this.System = System;
-        this.File = File;
+        this.file = file;
+        this.MessageType = MessageType.FILEMESSAGE;
+    }
+    
+    public Message(String message, Image img) {
+        this.message = message;
+        this.img = img;
+        this.MessageType = MessageType.AVATAR;
+    }
+
+    public Message(String message) {
+        this.message = message;
+        this.MessageType = MessageType.MESSAGE;
+    }
+    
+    public Message(String message, String id) {
+        this.message = message;
+        this.id = id;
+        this.MessageType = MessageType.WHISPER;
+    }
+    
+    public Message(String id, MessageType MessageType) {
+        this.id = id;
+        this.MessageType = MessageType;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMessage() {
@@ -38,13 +67,9 @@ public class Message implements Serializable{
     public void setMessage(String message) {
         this.message = message;
     }
-
-    public boolean isSystem() {
-        return System;
-    }
-
-    public boolean isFile() {
-        return File;
+    
+    public MessageType getMessageType(){
+        return MessageType;
     }
 
     public File getFile() {
