@@ -9,61 +9,67 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+
+<StackPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <AnchorPane>
+      <HBox minHeight="400.0" minWidth="600.0">
          <children>
-            <VBox prefHeight="400.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane>
                <children>
-                  <TextArea fx:id="MessageList" editable="false" prefHeight="370.0" prefWidth="400.0" />
-                  <HBox>
+                  <VBox prefHeight="400.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TextField fx:id="SendTextArea" prefHeight="34.0" prefWidth="340.0" />
-                        <Button fx:id="SendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="36.0" prefWidth="60.0" text="Send" />
+                        <AnchorPane>
+                           <children>
+                              <TextArea fx:id="MessageList" editable="false" prefHeight="370.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <HBox fillHeight="false" layoutY="367.0" AnchorPane.leftAnchor="0.0">
+                                 <children>
+                                    <TextField fx:id="SendTextArea" prefHeight="34.0" prefWidth="340.0" />
+                                    <Button fx:id="SendButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#sendMessage" prefHeight="36.0" prefWidth="60.0" text="Send" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
                      </children>
-                  </HBox>
+                  </VBox>
+                  <Accordion fx:id="Menu" layoutX="400.0" maxWidth="-Infinity" prefHeight="400.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <panes>
+                      <TitledPane animated="false" text="Online">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ListView fx:id="OnlineList" layoutX="-1.0" layoutY="-2.0" prefHeight="350.0" prefWidth="200.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Friends">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ListView fx:id="FriendList" layoutX="-1.0" prefHeight="350.0" prefWidth="200.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Setiings">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="200.0">
+                                 <children>
+                                    <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" onAction="#autoFillServerIPPort" />
+                                    <Button fx:id="ConnectButton" layoutX="66.0" layoutY="49.0" mnemonicParsing="false" text="Connect" />
+                                    <CheckBox fx:id="CWSOptionButton" layoutX="15.0" layoutY="88.0" mnemonicParsing="false" text="Connect with start the app" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                    </panes>
+                  </Accordion>
                </children>
-            </VBox>
+            </AnchorPane>
          </children>
-      </AnchorPane>
-      <AnchorPane prefHeight="400.0" prefWidth="0.0">
-         <children>
-            <Accordion fx:id="Menu" prefHeight="400.0" prefWidth="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <panes>
-                <TitledPane animated="false" text="Online">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <ListView fx:id="OnlineList" layoutX="-1.0" layoutY="-2.0" prefHeight="350.0" prefWidth="200.0" />
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" text="Friends">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <ListView fx:id="FriendList" layoutX="-1.0" prefHeight="350.0" prefWidth="200.0" />
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" text="Setiings">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="200.0">
-                           <children>
-                              <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" onAction="#autoFillServerIPPort" />
-                              <Button fx:id="ConnectButton" layoutX="66.0" layoutY="49.0" mnemonicParsing="false" text="Connect" />
-                              <CheckBox fx:id="CWSOptionButton" layoutX="15.0" layoutY="88.0" mnemonicParsing="false" text="Connect with start the app" />
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-              </panes>
-            </Accordion>
-         </children>
-      </AnchorPane>
+      </HBox>
    </children>
-</HBox>
+</StackPane>
