@@ -63,7 +63,7 @@ public class Controller {
             }
         } else {
             try {
-                File propFile = new File("config.properties");
+                File propFile = new File("src/sample/resources/config.properties");
                 propFile.createNewFile();
                 PrintWriter propWriter = new PrintWriter(propFile);
                 propWriter.write("#Client Configuration");
