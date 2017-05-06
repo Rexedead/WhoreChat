@@ -29,7 +29,7 @@ public class Client {
     }
 
     public void disconnect() throws IOException {
-        sendMessage(new Message("exit", true, false));
+        sendMessage(new Message());
         in.close();
         out.close();
         isConnected = false;
@@ -39,9 +39,8 @@ public class Client {
         out.writeObject(message);
     }
 
-    public String messageUpdater() throws IOException, ClassNotFoundException {
-        message = (Message)in.readObject();            
-        return message.getMessage();
+    public Object messageUpdater() throws IOException, ClassNotFoundException {
+        return in.readObject();
     }
 
     boolean isConnected() {
