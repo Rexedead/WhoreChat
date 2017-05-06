@@ -5,12 +5,9 @@
  */
 package sample;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -94,7 +91,7 @@ public class Server{
             try {
                 while(true){
                     message = (Message) in.readObject();                                    //Получаем сообщение клиента
-                    System.out.println(message);
+                    System.out.println(message.getMessage());
                     try {
                         if(message.isSystem()){
                             switch(message.getMessage()){
