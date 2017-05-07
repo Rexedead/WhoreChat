@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  */
 public class Server{
     private int PORT = 28960;                               //Порт сервера "По умолчанию"
+    private ArrayList<User> Users = new ArrayList<User>();
     private ArrayList<Client> clients = 
             new ArrayList<Client>();                        //Массив клиентов
     
@@ -37,6 +38,9 @@ public class Server{
         try {
             server = new ServerSocket(PORT);                //Попытка запустить сервер на порте PORT
             System.out.println("Server online");
+
+//            new DBworker().writeToSQLwhenRegister(new ClientData("pw","222@","lg"));
+
         } catch (IOException ex) {
             System.out.println
         ("Error #1: Server offline.");
@@ -62,6 +66,7 @@ public class Server{
         private ObjectOutputStream out = null;                     //Поток для отправки данных клиенту
         private Socket clientSocket = null;                 //Сокет клиента
         private String nickname = null;                     //Ник клиента(Будет изменено когда подключим БД)
+        private ClientData ClientData;
         
         public Client(Socket clientSocket) throws IOException{
             this.clientSocket = clientSocket;
@@ -82,40 +87,46 @@ public class Server{
             System.out.println("Client "
                     + clientSocket.toString() 
                     + " cames now");                                            //Оповещение о том, что клиент в зашел в чат(серверное)
+            Message message;                                                    //Строка для сообщений клиента 
             try {
-                out.writeObject(new Message("You are now online", false, false));
-            } catch (IOException ex) {
+                ClientData = (ClientData)in.readObject();
+                if(ClientData.isSingUp()){
+                    new DBworker().writeToSQLwhenRegister(ClientData);
+                }else{
+                    String clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
+                    Users.add(new User(ClientData.getAvatar(),clientId,ClientData.getNickName()));
+                }
+            } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Message message;                                                    //Строка для сообщений клиента           
             try {
                 while(true){
                     message = (Message) in.readObject();                                    //Получаем сообщение клиента
-                    System.out.println(message.getMessage());
+                    
                     try {
-                        if(message.isSystem()){
-                            switch(message.getMessage()){
-                                case("add"):
-                                    break;
-                                case("delete"):
-                                    break;
-                                case("nickname"):
-                                    break;
-                                case("Avatar"):
-                                    break;
-                                case("exit"):
-                                    out.writeObject(new Message("You will disconnect", true, false));
-                                    close();
-                                    break;
-                            }
-                        }else{
-                            for (Client client : clients) {
-                                client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
-                            }
-                        }
-                    } catch(StringIndexOutOfBoundsException e) {
-                        for (Client client : clients) {
-                            client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
+                        switch(message.getMessageType()){
+                            case MESSAGE:
+                                System.out.println("Message from client: "+message.getMessage());
+                                message.setId(ClientData.getId());
+                                for (Client client : clients) {
+                                    client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
+                                }
+                                break;
+                            case WHISPER:
+                                break;
+                            case FILEMESSAGE:
+                                break;
+                            case AVATAR:
+                                break;
+                            case ADDFRIEND:
+                                break;
+                            case DELFRIEND:
+                                break;
+                            case NICKNAME:
+                                break;
+                            case EXIT:
+                                close();
+                                break;
                         }
                     } catch (NullPointerException e) {
                         
@@ -141,6 +152,11 @@ public class Server{
         private void close() throws IOException{            //Метод для закрытия потоков чтения и записи клиента
             in.close();
             out.close();
+            for(int i = 0; i < Users.size(); i++){
+                if(Users.get(i).getId() == ClientData.getId()){
+                    Users.remove(i);
+                }
+            }
             clients.remove(this);
             interrupt();
         }

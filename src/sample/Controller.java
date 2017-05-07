@@ -1,27 +1,29 @@
 package sample;
 
-import java.io.File;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.io.FileNotFoundException;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
-import javafx.event.ActionEvent;
 
 
 public class Controller {
 
     InputStream inputStream;
-    private boolean connectWithStart;
     private String serverAddress;
     private int serverPort;
     Client client = new Client();
-    private boolean isConnected = false; 
+    private boolean isConnected = false;
+    Message message;
+    User User;
+
 
     @FXML
-    private TextArea MessageList;
+    private ListView MessageList;
 
     @FXML
     private TextField SendTextArea;
@@ -48,19 +50,25 @@ public class Controller {
     private CheckBox CWSOptionButton;
 
 
-    public void initialize() throws FileNotFoundException, IOException {
+    public void initialize() throws IOException {
 
         Properties properties = new Properties();
         String propFilename = "config.properties";
 
-        inputStream = getClass().getClassLoader().getResourceAsStream(propFilename);
+        inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
 
         if (inputStream != null) {
             try {
                 properties.load(inputStream);
             } catch (IOException e) {
-                MessageList.appendText("Файл конфигурации пустой или поврежден" + "\n");
+                MessageList.getItems().add("Файл конфигурации пустой или поврежден!");
             }
+            this.serverAddress = properties.getProperty("IP");
+            System.out.println(properties.getProperty("IP"));
+            this.serverPort = Integer.parseInt(properties.getProperty("port"));
+            System.out.println(properties.getProperty("port"));
+            this.CWSOptionButton.setSelected(Boolean.parseBoolean(properties.getProperty("AutoConnect")));
+            autoFillServerIPPort();
         } else {
             try {
                 File propFile = new File("config.properties");
@@ -68,44 +76,47 @@ public class Controller {
                 PrintWriter propWriter = new PrintWriter(propFile);
                 propWriter.write("#Client Configuration");
             } catch (IOException e) {
-                MessageList.appendText("Не удалось создать файл конфигурации" + "\n");
+                MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-        this.serverAddress = properties.getProperty("IP");
-        System.out.println(properties.getProperty("IP"));
-        this.serverPort = Integer.parseInt(properties.getProperty("port"));
-        System.out.println(properties.getProperty("port"));
-        this.connectWithStart = Boolean.parseBoolean(properties.getProperty("AutoConnect"));
-        autoFillServerIPPort();
 
-        if (connectWithStart) {
+        if (CWSOptionButton.isSelected()) {
             connect(this.serverAddress, this.serverPort);
         }
 
-        
+
         ConnectButton.setOnAction((ActionEvent event) -> {
-            connect(SocketInputArea.getText().split(":")[0], 
+            connect(SocketInputArea.getText().split(":")[0],
                     Integer.parseInt(SocketInputArea.getText().split(":")[1]));
         });
-        
+
     }
-    
-    private void connect(String serverAddress, int serverPort){
+
+    private void connect(String serverAddress, int serverPort) {
         client = new Client(serverAddress, serverPort);
-        if(client.isConnected()){
+
+        if (client.isConnected()) {
             isConnected = true;
             ConnectButton.setDisable(true);
+//            DBworker db = new DBworker();
+//            ObservableList<String> items =FXCollections.observableArrayList (db.readFromSQLwhenLogining("Rexedead","111"));
+//            OnlineList.setItems(items);
+
             new Thread(() -> {
                 try {
-                    while(true){
-                        MessageList.appendText(client.messageUpdater() + "\n");
+                    while (true) {
+                        try {
+                            message = (Message) client.messageUpdater();
+                        } catch (ClassCastException e) {
+                            User = (User) client.messageUpdater();
+                        }
                     }
                 } catch (IOException e) {
-                    MessageList.appendText("Connection lost\n");
+                    MessageList.getItems().add("Connection lost");
                     ConnectButton.setDisable(false);
                     isConnected = false;
                 } catch (ClassNotFoundException ex) {
-                    MessageList.appendText("Connection lost\n");
+                    MessageList.getItems().add("Connection lost");
                     ConnectButton.setDisable(false);
                     isConnected = false;
                 }
@@ -114,16 +125,18 @@ public class Controller {
     }
 
     public void sendMessage() throws IOException {
-        if(isConnected){
-            client.sendMessage(
-                    new Message(SendTextArea.getText(), false, false));                             //Метод отправки сообщения кнопкой в GUI
+        if (isConnected) {
+            if (!(SendTextArea.getText().equals(""))) {
+                client.sendMessage(
+                        new Message(SendTextArea.getText()));  //Метод отправки сообщения
+            }
             SendTextArea.clear();
-        }else{
-            MessageList.appendText("You are not online\n");
+        } else {
+            MessageList.getItems().add("You are not online");
         }
     }
 
     public void autoFillServerIPPort() {
-        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из propeties
+        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
     }
 }
