@@ -15,6 +15,7 @@ public class Client {
     private static ObjectOutputStream out;
     private static ObjectInputStream in;
     private static boolean isConnected = false;
+    private static boolean Authorisated = false;
     
     public Client(){}
 
@@ -60,5 +61,13 @@ public class Client {
 
     public static boolean isConnected() {
         return isConnected;
+    }
+
+    public static boolean isAuthorisated() {
+        return Authorisated;
+    }
+    
+    public static void setAuthorisated() {
+        Client.Authorisated = true;
     }
 }
