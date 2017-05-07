@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample;
+package sample.Server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,6 +13,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sample.ClientData;
+import sample.Message;
+import sample.User;
 
 /**
  *
@@ -90,7 +93,7 @@ public class Server{
                 if(ClientData.isSingUp()){
                     new DBworker().writeToSQLwhenRegister(ClientData);
                 }else{
-                   Users.add(new User(setId(new DBworker().readFromSQLwhenLogining(ClientData.geteMail(), ClientData.getPassword())));
+//                   Users.add(new User(setId(new DBworker().readFromSQLwhenLogining(ClientData.geteMail(), ClientData.getPassword())));
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);

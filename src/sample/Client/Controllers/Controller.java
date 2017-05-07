@@ -1,4 +1,4 @@
-package sample;
+package sample.Client.Controllers;
 
 import java.io.File;
 import javafx.fxml.FXML;
@@ -9,6 +9,11 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import sample.Client.Client;
+import sample.Message;
+import sample.User;
 
 
 public class Controller {
@@ -86,17 +91,23 @@ public class Controller {
 
         
         ConnectButton.setOnAction((ActionEvent event) -> {
-            connect(SocketInputArea.getText().split(":")[0], 
-                    Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+            try {
+                connect(SocketInputArea.getText().split(":")[0],
+                        Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+            } catch (IOException ex) {
+                
+            }
         });
         
     }
     
-    private void connect(String serverAddress, int serverPort){
+    private void connect(String serverAddress, int serverPort) throws IOException{
         client = new Client(serverAddress, serverPort);
         if(client.isConnected()){
             isConnected = true;
             ConnectButton.setDisable(true);
+            Parent root = FXMLLoader.load(getClass().getResource("FXML/LogInModalWindow.fxml"));
+            
             new Thread(() -> {
                 try {
                     while(true){
@@ -126,6 +137,13 @@ public class Controller {
             SendTextArea.clear();
         }else{
             MessageList.getItems().add("You are not online");
+        }
+    }
+    
+    public void sendSystemMessage(){
+        if(isConnected){
+//            if(signUp.isSelected())
+//                client.sendSystemMessage(new ClientData());
         }
     }
 

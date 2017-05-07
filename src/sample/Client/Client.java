@@ -1,10 +1,12 @@
-package sample;
+package sample.Client;
 
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import sample.ClientData;
+import sample.Message;
 
 public class Client {
 
@@ -38,12 +40,16 @@ public class Client {
     public void sendMessage(Message message) throws IOException {
         out.writeObject(message);
     }
+    
+    public void sendSystemMessage(ClientData message) throws IOException {
+        out.writeObject(message);
+    }
 
     public Object messageUpdater() throws IOException, ClassNotFoundException {
         return in.readObject();
     }
 
-    boolean isConnected() {
+    public boolean isConnected() {
         return isConnected;
     }
 }

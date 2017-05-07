@@ -1,6 +1,7 @@
-package sample;
+package sample.Server;
 
 import java.sql.*;
+import sample.ClientData;
 
 public class DBworker {
     private String URL = "jdbc:mysql://localhost:3306/whore_chat?useUnicode=true&useSSL=true&useJDBCCompliantTimezoneShift=true" +
