@@ -6,8 +6,18 @@
 package sample;
 
 /**
- *
  * @author Hate
  */
-public enum MessageType{MESSAGE, AUTORISATION, CLIENTONLINE, WHISPER, EXIT, AVATAR, NICKNAME, FILEMESSAGE, ADDFRIEND, DELFRIEND}
+public enum MessageType {
+    MESSAGE,
+    AUTHORISATION,
+    CLIENTONLINE,
+    WHISPER,
+    EXIT,
+    AVATAR,
+    NICKNAME,
+    FILEMESSAGE,
+    ADDFRIEND,
+    DELFRIEND
+}
 

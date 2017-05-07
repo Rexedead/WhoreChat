@@ -38,8 +38,6 @@ public class Server{
         try {
             server = new ServerSocket(PORT);                //Попытка запустить сервер на порте PORT
             System.out.println("Server online");
-            DBworker ddd = new DBworker();
-
 
 //            new DBworker().writeToSQLwhenRegister(new ClientData("pw","222@","lg"));
 
@@ -95,11 +93,10 @@ public class Server{
                 if(ClientData.isSingUp()){
                     new DBworker().writeToSQLwhenRegister(ClientData);
                 }else{
-                   Users.add(new User(setId(new DBworker().readFromSQLwhenLogining(ClientData.geteMail(), ClientData.getPassword())));
+                    String clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
+                    Users.add(new User(ClientData.getAvatar(),clientId,ClientData.getNickName()));
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
@@ -109,7 +106,7 @@ public class Server{
                     try {
                         switch(message.getMessageType()){
                             case MESSAGE:
-                                System.out.println(message.getMessage());
+                                System.out.println("Message from client: "+message.getMessage());
                                 message.setId(ClientData.getId());
                                 for (Client client : clients) {
                                     client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере

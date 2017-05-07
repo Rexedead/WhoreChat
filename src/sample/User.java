@@ -13,8 +13,21 @@ import javafx.scene.image.Image;
  */
 public class User extends ClientData{
 
+
+
+
     public User(Image avatar, String id, String nickName) {
         super(avatar, id, nickName);
+
     }
-    
+
+    @Override
+    public void setId(String id) {
+        super.setId(id);
+    }
+
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 }

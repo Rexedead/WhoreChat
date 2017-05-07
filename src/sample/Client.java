@@ -11,7 +11,6 @@ public class Client {
     private Socket connection;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private Message message;
     private boolean isConnected = false;
     
     public Client(){}
