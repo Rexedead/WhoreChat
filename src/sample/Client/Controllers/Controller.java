@@ -4,16 +4,21 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Client.Client;
@@ -57,6 +62,9 @@ public class Controller {
 
     @FXML
     private CheckBox CWSOptionButton;
+    
+    @FXML
+    private AnchorPane root;
 
 
     public void initialize() throws IOException {
@@ -65,7 +73,6 @@ public class Controller {
         String propFilename = "config.properties";
 
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
-
         if (inputStream != null) {
             try {
                 properties.load(inputStream);
@@ -114,7 +121,7 @@ public class Controller {
 //            DBworker db = new DBworker();
 //            ObservableList<String> items =FXCollections.observableArrayList (db.readFromSQLwhenLogining("Rexedead","111"));
 //            OnlineList.setItems(items);
-            showLogInSignUpWindow();
+            showLogInSignUpWindow(root);
             new Thread(() -> {
                 try {
                     while (true) {
@@ -160,13 +167,14 @@ public class Controller {
         this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
     }
     
-    public void showLogInSignUpWindow() throws IOException{
+    public void showLogInSignUpWindow(Node node) throws IOException{
+        Parent modalWindow = FXMLLoader.load(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         Stage window = new Stage();
-        window.initModality(Modality.WINDOW_MODAL);
-        Parent root = FXMLLoader.load(getClass().getResource("../FXML/reglogin.fxml"));
         window.setTitle("Log In");
         window.setResizable(false);
-        window.setScene(new Scene(root, 600, 400));
+        window.setScene(new Scene(modalWindow));
+        window.initModality(Modality.WINDOW_MODAL);
+        window.initOwner(node.getScene().getWindow());
         window.show();
     }
 }
