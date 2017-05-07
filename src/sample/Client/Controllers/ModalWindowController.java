@@ -5,7 +5,6 @@
  */
 package sample.Client.Controllers;
 
-import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +13,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import sample.Client.Client;
 import sample.ClientData;
+
+import java.io.IOException;
 
 /**
  *
