@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import static java.lang.Thread.sleep;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,7 +92,7 @@ public class Controller {
                 try {
                     connect(SocketInputArea.getText().split(":")[0],
                             Integer.parseInt(SocketInputArea.getText().split(":")[1]));
-                } catch (IOException ex) {
+                } catch (IOException | InterruptedException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             
@@ -100,9 +101,8 @@ public class Controller {
 
     }
     
-    private void connect(String serverAddress, int serverPort) throws IOException{
+    private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
         Client.connect(serverAddress, serverPort);
-
         if (Client.isConnected()) {
             isConnected = true;
             ConnectButton.setDisable(true);
@@ -111,12 +111,15 @@ public class Controller {
                 try {
                     while (true) {
                         try {
-                            message = (Message) Client.messageUpdater();
+                            if(Client.isAuthorisated() || !Client.isConnected()){
+                                message = (Message) Client.messageUpdater();
+                            }
                         } catch (ClassCastException e) {
                             
                         }
                     }
                 } catch (IOException | ClassNotFoundException e) {
+                    System.out.println("ggh");
                     MessageList.getItems().add("Connection lost");
                     ConnectButton.setDisable(false);
                     isConnected = false;

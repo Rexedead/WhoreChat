@@ -17,7 +17,7 @@
                         <Button fx:id="LoginButton" defaultButton="true" layoutX="25.0" layoutY="136.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Log in" />
                         <TextField fx:id="LoginField" layoutX="25.0" layoutY="33.0" promptText="Login" />
                         <TextField fx:id="PasswordField" layoutX="25.0" layoutY="70.0" promptText="Password" />
-                        <Button fx:id="ExitButton" cancelButton="true" layoutX="105.0" layoutY="136.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Exit" />
+                        <Button fx:id="ExitButton" cancelButton="true" layoutX="105.0" layoutY="136.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="70.0" text="Exit" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -26,7 +26,7 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="205.0" prefWidth="200.0">
                      <children>
                         <Button fx:id="RegButton" defaultButton="true" layoutX="27.0" layoutY="153.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Register" />
-                        <Button fx:id="RegExitButton" cancelButton="true" layoutX="104.0" layoutY="153.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Exit" />
+                        <Button fx:id="RegExitButton" cancelButton="true" layoutX="104.0" layoutY="153.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="70.0" text="Exit" />
                         <TextField fx:id="RegPasswordField" layoutX="25.0" layoutY="110.0" promptText="Password" />
                         <TextField fx:id="RegEMailField" layoutX="25.0" layoutY="72.0" promptText="eMail" />
                         <TextField fx:id="RegNickNameField" layoutX="25.0" layoutY="36.0" promptText="Nickname" />
