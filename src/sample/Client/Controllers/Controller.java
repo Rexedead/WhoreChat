@@ -4,12 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +68,7 @@ public class Controller {
 
         Properties properties = new Properties();
         String propFilename = "config.properties";
-
+        System.out.println(getClass().getResource("../FXML/reglogin.fxml"));
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
         if (inputStream != null) {
             try {
