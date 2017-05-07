@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="239.0" prefWidth="184.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Client.Controllers.Controller">
+<AnchorPane prefHeight="214.0" prefWidth="167.0" xmlns="http://javafx.com/javafx/8.0.111">
    <children>
       <TabPane prefHeight="263.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
