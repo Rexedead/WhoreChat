@@ -24,6 +24,10 @@ public class Message implements Serializable{
         this.MessageType = MessageType.EXIT;
     }
 
+    public Message(MessageType MessageType) {
+        this.MessageType = MessageType;
+    }
+
     public Message(String message, File file) {
         this.message = message;
         this.file = file;

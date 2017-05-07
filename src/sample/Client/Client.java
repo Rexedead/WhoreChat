@@ -5,50 +5,60 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import sample.ClientData;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sample.Message;
 
 public class Client {
 
-    private Socket connection;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private boolean isConnected = false;
+    private static Socket connection;
+    private static ObjectOutputStream out;
+    private static ObjectInputStream in;
+    private static boolean isConnected = false;
     
     public Client(){}
 
-    public Client(String serverAddress, int serverPort) {
+//    public Client(String serverAddress, int serverPort) {
+//        try {
+//            this.connection = new Socket(serverAddress, serverPort);
+//            in = new ObjectInputStream(connection.getInputStream()); //получаем смс с сервера
+//            out = new ObjectOutputStream(connection.getOutputStream()); //поток отправки сообщения
+//            isConnected = true;
+//        } catch (IOException e) {
+//            System.out.println("Не удалось подключиться к серверу");
+//        }
+//
+//    }
+    public static void connect(String serverAddress, int serverPort){
         try {
-            this.connection = new Socket(serverAddress, serverPort);
+            Client.connection = new Socket(serverAddress, serverPort);
             in = new ObjectInputStream(connection.getInputStream()); //получаем смс с сервера
             out = new ObjectOutputStream(connection.getOutputStream()); //поток отправки сообщения
             isConnected = true;
-        } catch (IOException e) {
-            System.out.println("Не удалось подключиться к серверу");
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-
-    public void disconnect() throws IOException {
+    public static void disconnect() throws IOException {
         sendMessage(new Message());
         in.close();
         out.close();
         isConnected = false;
     }
 
-    public void sendMessage(Message message) throws IOException {
+    public static void sendMessage(Message message) throws IOException {
         out.writeObject(message);
     }
     
-    public void sendSystemMessage(ClientData message) throws IOException {
-        out.writeObject(message);
+    public static void sendSystemMessage(Object object) throws IOException {
+        out.writeObject(object);
     }
 
-    public Object messageUpdater() throws IOException, ClassNotFoundException {
+    public static Object messageUpdater() throws IOException, ClassNotFoundException {
         return in.readObject();
     }
 
-    public boolean isConnected() {
+    public static boolean isConnected() {
         return isConnected;
     }
 }

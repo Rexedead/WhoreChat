@@ -20,19 +20,18 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Client.Client;
 import sample.Message;
-import sample.User;
 
 public class Controller {
 
     InputStream inputStream;
     private String serverAddress;
     private int serverPort;
-    Client client = new Client();
     private boolean isConnected = false;
     Message message;
-    User User;
 
-
+    @FXML
+    private AnchorPane root;
+    
     @FXML
     private ListView MessageList;
 
@@ -61,14 +60,9 @@ public class Controller {
     private CheckBox CWSOptionButton;
     
     @FXML
-    private AnchorPane root;
-
-
-    public void initialize() throws IOException {
-
+    public void initialize() throws IOException{
         Properties properties = new Properties();
-        String propFilename = "config.properties";
-        System.out.println(getClass().getResource("../FXML/reglogin.fxml"));
+        String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
         if (inputStream != null) {
             try {
@@ -92,47 +86,37 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-
-        if (CWSOptionButton.isSelected()) {
-            connect(this.serverAddress, this.serverPort);
-        }
-
-
         ConnectButton.setOnAction((ActionEvent event) -> {
-            try {
-                connect(SocketInputArea.getText().split(":")[0],
-                        Integer.parseInt(SocketInputArea.getText().split(":")[1]));
-            } catch (IOException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           
+                try {
+                    connect(SocketInputArea.getText().split(":")[0],
+                            Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
+           
         });
 
     }
     
     private void connect(String serverAddress, int serverPort) throws IOException{
-        client = new Client(serverAddress, serverPort);
+        Client.connect(serverAddress, serverPort);
 
-        if (client.isConnected()) {
+        if (Client.isConnected()) {
             isConnected = true;
             ConnectButton.setDisable(true);
-//            DBworker db = new DBworker();
-//            ObservableList<String> items =FXCollections.observableArrayList (db.readFromSQLwhenLogining("Rexedead","111"));
-//            OnlineList.setItems(items);
             showLogInSignUpWindow(root);
             new Thread(() -> {
                 try {
                     while (true) {
                         try {
-                            message = (Message) client.messageUpdater();
+                            message = (Message) Client.messageUpdater();
                         } catch (ClassCastException e) {
-                            User = (User) client.messageUpdater();
+                            
                         }
                     }
-                } catch (IOException e) {
-                    MessageList.getItems().add("Connection lost");
-                    ConnectButton.setDisable(false);
-                    isConnected = false;
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException e) {
                     MessageList.getItems().add("Connection lost");
                     ConnectButton.setDisable(false);
                     isConnected = false;
@@ -144,7 +128,7 @@ public class Controller {
     public void sendMessage() throws IOException {
         if (isConnected) {
             if (!(SendTextArea.getText().equals(""))) {
-                client.sendMessage(
+                Client.sendMessage(
                         new Message(SendTextArea.getText()));  //Метод отправки сообщения
             }
             SendTextArea.clear();
@@ -153,11 +137,8 @@ public class Controller {
         }
     }
     
-    public void sendSystemMessage(){
-        if(isConnected){
-//            if(signUp.isSelected())
-//                client.sendSystemMessage(new ClientData());
-        }
+    public void sendSystemMessage(Object object) throws IOException{           
+        Client.sendSystemMessage(object);        
     }
 
     public void autoFillServerIPPort() {
