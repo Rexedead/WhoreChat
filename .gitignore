@@ -25,6 +25,7 @@ manifest.mf
 nbproject
 dist
 build
+WhoreChat.jar
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
