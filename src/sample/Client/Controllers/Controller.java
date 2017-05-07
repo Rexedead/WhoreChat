@@ -1,20 +1,24 @@
 package sample.Client.Controllers;
 
-import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.io.FileNotFoundException;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import sample.Client.Client;
 import sample.Message;
 import sample.User;
-
 
 public class Controller {
 
@@ -25,7 +29,7 @@ public class Controller {
     private boolean isConnected = false;
     Message message;
     User User;
-    
+
 
     @FXML
     private ListView MessageList;
@@ -55,7 +59,7 @@ public class Controller {
     private CheckBox CWSOptionButton;
 
 
-    public void initialize() throws FileNotFoundException, IOException {
+    public void initialize() throws IOException {
 
         Properties properties = new Properties();
         String propFilename = "config.properties";
@@ -84,37 +88,40 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-        
+
         if (CWSOptionButton.isSelected()) {
             connect(this.serverAddress, this.serverPort);
         }
 
-        
+
         ConnectButton.setOnAction((ActionEvent event) -> {
             try {
                 connect(SocketInputArea.getText().split(":")[0],
                         Integer.parseInt(SocketInputArea.getText().split(":")[1]));
             } catch (IOException ex) {
-                
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
     }
     
     private void connect(String serverAddress, int serverPort) throws IOException{
         client = new Client(serverAddress, serverPort);
-        if(client.isConnected()){
+
+        if (client.isConnected()) {
             isConnected = true;
             ConnectButton.setDisable(true);
-            Parent root = FXMLLoader.load(getClass().getResource("FXML/LogInModalWindow.fxml"));
-            
+//            DBworker db = new DBworker();
+//            ObservableList<String> items =FXCollections.observableArrayList (db.readFromSQLwhenLogining("Rexedead","111"));
+//            OnlineList.setItems(items);
+            showLogInSignUpWindow();
             new Thread(() -> {
                 try {
-                    while(true){
-                        try{
-                            message = (Message)client.messageUpdater();
-                        }catch(ClassCastException e){
-                            User = (User)client.messageUpdater();
+                    while (true) {
+                        try {
+                            message = (Message) client.messageUpdater();
+                        } catch (ClassCastException e) {
+                            User = (User) client.messageUpdater();
                         }
                     }
                 } catch (IOException e) {
@@ -131,11 +138,13 @@ public class Controller {
     }
 
     public void sendMessage() throws IOException {
-        if(isConnected){
-            client.sendMessage(
-                    new Message(SendTextArea.getText()));                             //Метод отправки сообщения кнопкой в GUI
+        if (isConnected) {
+            if (!(SendTextArea.getText().equals(""))) {
+                client.sendMessage(
+                        new Message(SendTextArea.getText()));  //Метод отправки сообщения
+            }
             SendTextArea.clear();
-        }else{
+        } else {
             MessageList.getItems().add("You are not online");
         }
     }
@@ -148,6 +157,16 @@ public class Controller {
     }
 
     public void autoFillServerIPPort() {
-        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из propeties
+        this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
+    }
+    
+    public void showLogInSignUpWindow() throws IOException{
+        Stage window = new Stage();
+        window.initModality(Modality.WINDOW_MODAL);
+        Parent root = FXMLLoader.load(getClass().getResource("../FXML/reglogin.fxml"));
+        window.setTitle("Log In");
+        window.setResizable(false);
+        window.setScene(new Scene(root, 600, 400));
+        window.show();
     }
 }

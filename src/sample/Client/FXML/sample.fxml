@@ -8,8 +8,7 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Client.Controllers.Controller">
    <children>
       <AnchorPane prefHeight="343.0" prefWidth="400.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -21,9 +20,9 @@
             <TextField fx:id="SendTextArea" prefHeight="32.0" prefWidth="340.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="340.0" layoutY="371.0" prefHeight="30.0" prefWidth="60.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="200.0">
+      <AnchorPane layoutX="340.0" layoutY="371.0" prefHeight="30.0" prefWidth="60.0" AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="200.0">
          <children>
-            <Button fx:id="SendButton" defaultButton="true" focusTraversable="false" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#sendMessage" prefHeight="30.0" prefWidth="60.0" text="Send" />
+            <Button fx:id="SendButton" defaultButton="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#sendMessage" prefHeight="31.0" prefWidth="60.0" text="Send" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="353.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
