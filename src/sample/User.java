@@ -13,11 +13,13 @@ import javafx.scene.image.Image;
  */
 public class User extends ClientData{
 
+    public User(Image avatar,String id, String nickName) {
+        super(id, nickName);
 
+    }
 
-
-    public User(Image avatar, String id, String nickName) {
-        super(avatar, id, nickName);
+    public User(String id, String nickName) {
+        super(id, nickName);
 
     }
 

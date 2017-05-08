@@ -13,7 +13,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import sample.ClientData;
 import sample.Message;
-import sample.MessageType;
 import sample.User;
 
 /**
@@ -93,17 +92,17 @@ public class Server{
             try {
                 ClientData = (ClientData)in.readObject();
                 if(ClientData.isSingUp()){
-                    new DBworker().writeToSQLwhenRegister(ClientData);
+//                    String clientId = new DBworker().writeToSQLwhenRegister(ClientData);
+//                    Users.add(new User(clientId,ClientData.getNickName()));
                 }else{
                     String clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
-                    Users.add(new User(ClientData.getAvatar(),clientId,ClientData.getNickName()));
+                    Users.add(new User(clientId,ClientData.getNickName()));
                 }
             } catch (IOException | ClassNotFoundException ex) {
             }
             try {
                 while(true){
                     message = (Message) in.readObject();                                    //Получаем сообщение клиента
-                    
                     try {
                         switch(message.getMessageType()){
                             case MESSAGE:

@@ -17,9 +17,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Client.Client;
+import sample.Client.MessageList;
+import sample.Client.UserList;
 import sample.Message;
 
 public class Controller {
@@ -28,7 +31,12 @@ public class Controller {
     private String serverAddress;
     private int serverPort;
     private boolean isConnected = false;
+    Client client;
     Message message;
+    
+    private UserList userList = new UserList();
+    private MessageList msgList = new MessageList();
+    private FriendList FrndList = new FriendList();
 
     @FXML
     private AnchorPane root;
@@ -60,8 +68,21 @@ public class Controller {
     @FXML
     private CheckBox CWSOptionButton;
     
+    private Parent modalWindow;
+    private Stage window;
+    private FXMLLoader FXMLLoader = new FXMLLoader();
+    private ModalWindowController ModalWindowController;
+    
     @FXML
     public void initialize() throws IOException{
+        FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
+        modalWindow = FXMLLoader.load();
+        ModalWindowController = FXMLLoader.getController();
+        
+        OnlineList.setItems(userList.getUserList());
+        MessageList.setItems(msgList.getMessageList());
+        FriendList.setItems(FrndList.getUserList());
+        
         Properties properties = new Properties();
         String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
@@ -87,61 +108,47 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-        ConnectButton.setOnAction((ActionEvent event) -> {
-           
-                try {
-                    connect(SocketInputArea.getText().split(":")[0],
-                            Integer.parseInt(SocketInputArea.getText().split(":")[1]));
-                } catch (IOException | InterruptedException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            
-           
+        
+        ConnectButton.setOnAction((ActionEvent event) -> {           
+            try {
+                connect(SocketInputArea.getText().split(":")[0],
+                        Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
-
     }
     
     private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
-        Client.connect(serverAddress, serverPort);
-        if (Client.isConnected()) {
+        Client client = new Client(serverAddress, serverPort);
+        if (client.isConnected()) {
+            ModalWindowController.setClient(client);
             isConnected = true;
             ConnectButton.setDisable(true);
             showLogInSignUpWindow(root);
-            new Thread(() -> {
-                try {
-                    while (true) {
-                        try {
-                            if(Client.isAuthorisated() || !Client.isConnected()){
-                                message = (Message) Client.messageUpdater();
-                            }
-                        } catch (ClassCastException e) {
-                            
-                        }
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    System.out.println("ggh");
-                    MessageList.getItems().add("Connection lost");
-                    ConnectButton.setDisable(false);
-                    isConnected = false;
-                }
-            }).start();
+            if (client.isConnected()){
+                new MessageUpdater().start();
+            }else{
+                isConnected = false;
+                ConnectButton.setDisable(false);
+            }
         }
     }
 
     public void sendMessage() throws IOException {
-        if (isConnected) {
+        if (client != null) {
             if (!(SendTextArea.getText().equals(""))) {
-                Client.sendMessage(
+                client.sendMessage(
                         new Message(SendTextArea.getText()));  //Метод отправки сообщения
             }
             SendTextArea.clear();
         } else {
-            MessageList.getItems().add("You are not online");
+            MessageList.getItems().add(new HBox(new Label("You are not online")));
         }
     }
     
     public void sendSystemMessage(Object object) throws IOException{           
-        Client.sendSystemMessage(object);        
+        client.sendSystemMessage(object);        
     }
 
     public void autoFillServerIPPort() {
@@ -149,13 +156,35 @@ public class Controller {
     }
     
     public void showLogInSignUpWindow(Node node) throws IOException{
-        Parent modalWindow = FXMLLoader.load(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
-        Stage window = new Stage();
+        window = new Stage();
         window.setTitle("Log In");
         window.setResizable(false);
         window.setScene(new Scene(modalWindow));
         window.initModality(Modality.WINDOW_MODAL);
         window.initOwner(node.getScene().getWindow());
-        window.show();
+        window.showAndWait();
     }
+    
+    class MessageUpdater extends Thread{
+
+        @Override
+        public void run() {
+
+            try {
+                while (true) {
+                    try {
+                        message = (Message) client.messageUpdater();
+                    } catch (ClassCastException e) {
+
+                    }
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                MessageList.getItems().add("Connection lost");
+                ConnectButton.setDisable(false);
+                isConnected = false;
+                interrupt();
+            }
+        }
+    } 
 }
+

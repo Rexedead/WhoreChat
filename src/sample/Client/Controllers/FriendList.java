@@ -3,21 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample;
+package sample.Client.Controllers;
+
+import sample.Client.UserList;
 
 /**
+ *
  * @author Hate
  */
-public enum MessageType {
-    MESSAGE,
-    AUTHORISATION,
-    WHISPER,
-    EXIT,
-    AVATAR,
-    NICKNAME,
-    FILEMESSAGE,
-    ADDFRIEND,
-    DELFRIEND,
-    USERONLINE
+public class FriendList extends UserList{
+    
 }
-
