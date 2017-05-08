@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample.Client;
+package sample.Client.ListsModels;
 
 import java.util.ArrayList;
 import javafx.collections.FXCollections;

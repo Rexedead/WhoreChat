@@ -5,6 +5,10 @@
  */
 package sample.Server;
 
+import sample.ClientData;
+import sample.Message;
+import sample.User;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

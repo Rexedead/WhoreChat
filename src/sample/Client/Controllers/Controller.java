@@ -1,5 +1,6 @@
 package sample.Client.Controllers;
 
+import sample.Client.ListsModels.FriendList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -21,8 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Client.Client;
-import sample.Client.MessageList;
-import sample.Client.UserList;
+import sample.Client.ListsModels.MessageList;
+import sample.Client.ListsModels.UserList;
 import sample.Message;
 
 public class Controller {
@@ -84,7 +85,7 @@ public class Controller {
         FriendList.setItems(FrndList.getUserList());
         
         Properties properties = new Properties();
-        String propFilename = "sample/resources/config.properties";
+        String propFilename = "/sample/resorces/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
         if (inputStream != null) {
             try {
