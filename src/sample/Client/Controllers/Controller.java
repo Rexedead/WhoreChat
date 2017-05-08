@@ -70,7 +70,7 @@ public class Controller {
     public void initialize() throws IOException {
 
         Properties properties = new Properties();
-        String propFilename = "config.properties";
+        String propFilename = "/sample/resorces/config.properties";
 
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
         if (inputStream != null) {
