@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="root" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Client.Controllers.Controller">
+   <children>
+      <AnchorPane prefHeight="343.0" prefWidth="400.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ListView fx:id="MessageList" prefHeight="370.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane focusTraversable="true" layoutY="364.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="34.0" prefWidth="344.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="260.0">
+         <children>
+            <TextField fx:id="SendTextArea" prefHeight="32.0" prefWidth="340.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="340.0" layoutY="371.0" prefHeight="30.0" prefWidth="60.0" AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="200.0">
+         <children>
+            <Button fx:id="SendButton" defaultButton="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#sendMessage" prefHeight="31.0" prefWidth="60.0" text="Send" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="353.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Accordion fx:id="Menu" maxWidth="-Infinity" opacity="0.7" prefHeight="400.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <panes>
+                <TitledPane animated="false" prefHeight="350.0" prefWidth="0.0" text="Online">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="OnlineList" layoutX="-1.0" layoutY="-2.0" prefHeight="350.0" prefWidth="200.0" AnchorPane.bottomAnchor="-24.0" AnchorPane.topAnchor="-11.600000000000023" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Friends">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="FriendList" layoutX="-1.0" prefHeight="350.0" prefWidth="200.0" AnchorPane.bottomAnchor="-14.4" AnchorPane.topAnchor="-21.200000000000045" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Setiings">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="200.0">
+                           <children>
+                              <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" onAction="#autoFillServerIPPort" />
+                              <Button fx:id="ConnectButton" layoutX="66.0" layoutY="49.0" mnemonicParsing="false" text="Connect" />
+                              <CheckBox fx:id="CWSOptionButton" layoutX="15.0" layoutY="88.0" mnemonicParsing="false" text="Connect with start the app" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+              </panes>
+            </Accordion>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

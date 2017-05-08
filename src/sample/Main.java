@@ -1,5 +1,6 @@
 package sample;
 
+import sample.Server.Server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +11,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Client/FXML/sample.fxml"));
         primaryStage.setTitle("Whore Chat");
+        primaryStage.setMinHeight(400);
+        primaryStage.setMinWidth(620);
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
+
     }
 
 
@@ -24,8 +28,6 @@ public class Main extends Application {
                 return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
             }
         }
-//        Client client = new Client();
-//        client.run();
         launch(args);
 
     }
