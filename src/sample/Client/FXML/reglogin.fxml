@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -18,6 +19,7 @@
                         <TextField fx:id="LoginField" layoutX="25.0" layoutY="33.0" promptText="Login" />
                         <TextField fx:id="PasswordField" layoutX="25.0" layoutY="70.0" promptText="Password" />
                         <Button fx:id="ExitButton" cancelButton="true" layoutX="105.0" layoutY="136.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="70.0" text="Exit" />
+                        <Label fx:id="statusLabel" layoutX="25.0" layoutY="203.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -30,6 +32,7 @@
                         <TextField fx:id="RegPasswordField" layoutX="25.0" layoutY="110.0" promptText="Password" />
                         <TextField fx:id="RegEMailField" layoutX="25.0" layoutY="72.0" promptText="eMail" />
                         <TextField fx:id="RegNickNameField" layoutX="25.0" layoutY="36.0" promptText="Nickname" />
+                        <Label fx:id="regStatusLabel" layoutX="14.0" layoutY="203.0" />
                      </children></AnchorPane>
             </content>
           </Tab>

@@ -85,7 +85,7 @@ public class Controller {
         FriendList.setItems(FrndList.getUserList());
         
         Properties properties = new Properties();
-        String propFilename = "/sample/resorces/config.properties";
+        String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
         if (inputStream != null) {
             try {
@@ -97,7 +97,6 @@ public class Controller {
             System.out.println(properties.getProperty("IP"));
             this.serverPort = Integer.parseInt(properties.getProperty("port"));
             System.out.println(properties.getProperty("port"));
-            this.CWSOptionButton.setSelected(Boolean.parseBoolean(properties.getProperty("AutoConnect")));
             autoFillServerIPPort();
         } else {
             try {

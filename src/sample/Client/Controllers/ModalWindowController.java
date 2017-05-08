@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -27,6 +28,12 @@ public class ModalWindowController{
     
     @FXML
     private Button ExitButton;
+    
+    @FXML
+    private Label statusLabel = new Label();
+    
+    @FXML
+    private Label regStatusLabel = new Label();
     
     @FXML
     private Button LoginButton;
@@ -108,6 +115,18 @@ public class ModalWindowController{
             if(message.getMessageType() == MessageType.AUTHORISATION){
                 Stage stage = (Stage)ExitButton.getScene().getWindow();
                 stage.close();
+            }else{
+                switch(message.getId()){
+                    case("email exist"):
+                        regStatusLabel.setText("Email address already in use");
+                        break;
+                    case("nickname exist"):
+                        regStatusLabel.setText("Nickname already in use");
+                        break;
+                    case("invalid"):
+                        statusLabel.setText("Wrong login or password");
+                        break;
+                }
             }
         } catch (IOException | ClassNotFoundException ex) {
             

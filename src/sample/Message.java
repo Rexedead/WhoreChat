@@ -83,6 +83,14 @@ public class Message implements Serializable{
     public void setFile(File file) {
         this.file = file;
     }
+
+    public Image getImg() {
+        return img;
+    }
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
     
     
     

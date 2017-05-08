@@ -5,13 +5,14 @@
  */
 package sample;
 
+import java.io.Serializable;
 import javafx.scene.image.Image;
 
 /**
  *
  * @author Hate
  */
-public class User extends ClientData{
+public class User extends ClientData implements Serializable {
 
     public User(Image avatar,String id, String nickName) {
         super(id, nickName);
