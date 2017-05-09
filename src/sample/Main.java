@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sample.Server.Server;
 
+
 public class Main extends Application {
 
     @Override

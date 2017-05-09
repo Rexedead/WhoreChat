@@ -35,9 +35,7 @@ public class MessageListViewController {
     /**
      * Initializes the controller class.
      */
-    public void initialize() {
-        System.out.println("I'am here!");
-    }    
+    public void initialize() {}    
 
     public void setAvatar(Image Avatar) {
         this.Avatar.setImage(Avatar);

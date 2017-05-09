@@ -122,7 +122,7 @@ public class Server{
                     }
                 }
                 out.writeObject(Users);
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException | ClassCastException ex) {
                 try {
                     close();
                 } catch (IOException ex1) {}
