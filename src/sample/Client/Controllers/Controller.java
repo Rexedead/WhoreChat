@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,6 +23,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import sample.Client.Client;
 import sample.Client.ListsModels.MessageList;
 import sample.Client.ListsModels.UserList;
@@ -78,11 +81,6 @@ public class Controller {
     
     @FXML
     public void initialize() throws IOException{
-        System.out.println(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
-        FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
-        modalWindow = FXMLLoader.load();
-        ModalWindowController = FXMLLoader.getController();
-        
         OnlineList.setItems(userList.getUserList());
         MessageList.setItems(msgList.getMessageList());
         FriendList.setItems(FrndList.getUserList());
@@ -123,6 +121,9 @@ public class Controller {
     }
     
     private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
+        FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
+        modalWindow = FXMLLoader.load();
+        ModalWindowController = FXMLLoader.getController();
         Client client = new Client(serverAddress, serverPort);
         msgList.add(new User(new Image("file:D:/projects/WhoreChat/src/sample/resources/12.jpg"),
         "12", "Hate"), new Message("У меня получилось!!!"));
@@ -130,6 +131,7 @@ public class Controller {
             ModalWindowController.setClient(client);
             isConnected = true;
             ConnectButton.setDisable(true);
+            FXMLLoader = new FXMLLoader();
             showLogInSignUpWindow(root);
             if (client.isConnected()){
                 new MessageUpdater().start();
@@ -166,6 +168,14 @@ public class Controller {
         window.setResizable(false);
         window.setScene(new Scene(modalWindow));
         window.initModality(Modality.WINDOW_MODAL);
+//        window.initStyle(StageStyle.UNDECORATED);
+        window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+            @Override
+            public void handle(WindowEvent event) {
+                ModalWindowController.cancel();
+            }
+        });
         window.initOwner(node.getScene().getWindow());
         window.showAndWait();
     }
