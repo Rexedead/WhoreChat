@@ -39,12 +39,15 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void disconnect() throws IOException {
-        sendMessage(new Message());
-        in.close();
-        out.close();
-        isConnected = false;
-        connection.close();
+    public void disconnect(){
+        try{
+            isConnected = false;
+            sendMessage(new Message());
+            connection.close();
+            in.close();
+            out.close();
+        }catch(NullPointerException | IOException e){
+        }
     }
 
     public void sendMessage(Message message) throws IOException {

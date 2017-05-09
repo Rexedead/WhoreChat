@@ -75,7 +75,7 @@ public class Server{
         private Socket clientSocket = null;                 //Сокет клиента
         private String nickname = null;                     //Ник клиента(Будет изменено когда подключим БД)
         private ClientData ClientData;
-        String clientId;
+        String clientId = null;
         
         public Client(Socket clientSocket) throws IOException{
             this.clientSocket = clientSocket;
@@ -102,25 +102,31 @@ public class Server{
                     ClientData = (ClientData)in.readObject();
                     if(ClientData.isSingUp()){
                         clientId = new DBworker().writeToSQLwhenRegister(ClientData);
-                            if(!clientId.endsWith("exist") && !clientId.isEmpty()){
+                            if(clientId.endsWith("exist") || clientId.equals("noDBconnect")){
+                                if(clientId.equals("noDBconnect")){
+                                    out.writeObject(new Message("Try again later", MessageType.MESSAGE));
+                                    close();
+                                }else{
+                                    out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                                }
+                            }else{
                                 Users.add(new User(clientId,ClientData.getNickName()));
                                 out.writeObject(new Message(MessageType.AUTHORISATION));
                                 break;
-                            }else{
-                                if(clientId != null){
-                                    out.writeObject(new Message(clientId, MessageType.MESSAGE));
-                                }else{
-                                    out.writeObject(new Message("Try again later", MessageType.MESSAGE));
-                                }
                             }
                     }else{
                         clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
-                        if(!clientId.equals("invalid")){
+                        if(!clientId.equals("invalid") && !clientId.equals("noDBconnect")){
                             Users.add(new User(clientId,ClientData.getNickName()));
                             out.writeObject(new Message(MessageType.AUTHORISATION));
                             break;
                         }else{
-                            out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                            if(clientId.equals("noDBconnect")){
+                                out.writeObject(new Message("Try again later", MessageType.MESSAGE));
+                                close();
+                            }else{
+                                out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                            }
                         }
                     }
                 }
@@ -195,7 +201,6 @@ public class Server{
         
         private void close() throws IOException{            //Метод для закрытия потоков чтения и записи клиента
             in.close();
-            out.close();
             for(int i = 0; i < Users.size(); i++){
                 if(Users.get(i).getId() == ClientData.getId()){
                     Users.remove(i);
