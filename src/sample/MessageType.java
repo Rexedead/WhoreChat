@@ -18,6 +18,7 @@ public enum MessageType {
     FILEMESSAGE,
     ADDFRIEND,
     DELFRIEND,
-    USERONLINE
+    USERONLINE,
+    USEROFFLINE
 }
 

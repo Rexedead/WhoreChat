@@ -47,7 +47,7 @@ public class Server{
             server = new ServerSocket(PORT);                //Попытка запустить сервер на порте PORT
             System.out.println("Server online");
 
-//            new DBworker().writeToSQLwhenRegister(new ClientData("pw","22226@","lg"));
+            new DBworker().writeToSQLwhenRegister(new ClientData("pw","22226@","lg"));
 
         } catch (IOException ex) {
             System.out.println
@@ -107,7 +107,11 @@ public class Server{
                                 out.writeObject(new Message(MessageType.AUTHORISATION));
                                 break;
                             }else{
-                                out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                                if(clientId != null){
+                                    out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                                }else{
+                                    out.writeObject(new Message("Try again later", MessageType.MESSAGE));
+                                }
                             }
                     }else{
                         clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
@@ -162,6 +166,9 @@ public class Server{
                             case NICKNAME:
                                 break;
                             case EXIT:
+                                for (Client client : clients) {
+                                    client.out.writeObject(new Message(clientId, MessageType.USEROFFLINE)); //Отправляем полученное сообщение всем клиентам на сервере
+                                }
                                 close();
                                 break;
                         }
