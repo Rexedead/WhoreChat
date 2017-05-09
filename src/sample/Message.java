@@ -28,16 +28,16 @@ public class Message implements Serializable{
         this.MessageType = MessageType;
     }
 
-    public Message(String message, File file) {
+    public Message(String message, File file, MessageType messageType) {
         this.message = message;
         this.file = file;
-        this.MessageType = MessageType.FILEMESSAGE;
+        this.MessageType = MessageType;
     }
     
-    public Message(String message, Image img) {
+    public Message(String message, Image img, MessageType messageType) {
         this.message = message;
         this.img = img;
-        this.MessageType = MessageType.AVATAR;
+        this.MessageType = MessageType;
     }
 
     public Message(String message) {
@@ -82,6 +82,14 @@ public class Message implements Serializable{
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public Image getImg() {
+        return img;
+    }
+
+    public void setImg(Image img) {
+        this.img = img;
     }
     
     

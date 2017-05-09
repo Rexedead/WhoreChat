@@ -5,12 +5,18 @@
  */
 package sample.Server;
 
+
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javax.imageio.ImageIO;
 import sample.ClientData;
 import sample.Message;
 import sample.MessageType;
@@ -69,6 +75,7 @@ public class Server{
         private Socket clientSocket = null;                 //Сокет клиента
         private String nickname = null;                     //Ник клиента(Будет изменено когда подключим БД)
         private ClientData ClientData;
+        String clientId;
         
         public Client(Socket clientSocket) throws IOException{
             this.clientSocket = clientSocket;
@@ -89,21 +96,39 @@ public class Server{
             System.out.println("Client "
                     + clientSocket.toString() 
                     + " cames now");                                            //Оповещение о том, что клиент в зашел в чат(серверное)
-            Message message;                                                    //Строка для сообщений клиента 
+            Message message;                                                    //Строка для сообщений клиента
             try {
-                ClientData = (ClientData)in.readObject();
-                if(ClientData.isSingUp()){
-                    new DBworker().writeToSQLwhenRegister(ClientData);
-                }else{
-                    String clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
-                    Users.add(new User(ClientData.getAvatar(),clientId,ClientData.getNickName()));
+                while(true){
+                    ClientData = (ClientData)in.readObject();
+                    if(ClientData.isSingUp()){
+                        clientId = new DBworker().writeToSQLwhenRegister(ClientData);
+                            if(!clientId.endsWith("exist")){
+                                Users.add(new User(clientId,ClientData.getNickName()));
+                                out.writeObject(new Message(MessageType.AUTHORISATION));
+                                break;
+                            }else{
+                                out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                            }
+                    }else{
+                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
+                        if(!clientId.equals("invalid")){
+                            Users.add(new User(clientId,ClientData.getNickName()));
+                            out.writeObject(new Message(MessageType.AUTHORISATION));
+                            break;
+                        }else{
+                            out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                        }
+                    }
                 }
+                out.writeObject(Users);
             } catch (IOException | ClassNotFoundException ex) {
+                try {
+                    close();
+                } catch (IOException ex1) {}
             }
             try {
                 while(true){
                     message = (Message) in.readObject();                                    //Получаем сообщение клиента
-                    
                     try {
                         switch(message.getMessageType()){
                             case MESSAGE:
@@ -114,10 +139,21 @@ public class Server{
                                 }
                                 break;
                             case WHISPER:
+                                for (Client client : clients) {
+                                    if(client.getID().equals(message.getId())){
+                                        client.out.writeObject(message);
+                                    }
+                                }
                                 break;
                             case FILEMESSAGE:
+                                System.out.println("FileMessage from client: "+message.getMessage());
+                                message.setId(ClientData.getId());
+                                for (Client client : clients) {
+                                    client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
+                                }
                                 break;
                             case AVATAR:
+                                saveAvatar(message.getImg());
                                 break;
                             case ADDFRIEND:
                                 break;
@@ -161,6 +197,18 @@ public class Server{
             clients.remove(this);
             interrupt();
         }
+        
+        private void saveAvatar(Image img){
+            File outputFile = new File(clientId);
+            BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
+            try {
+              ImageIO.write(bImage, "png", outputFile);
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+        }
+        
+        public String getID(){return clientId;}
     }
     
 }

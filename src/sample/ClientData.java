@@ -5,13 +5,14 @@
  */
 package sample;
 
+import java.io.Serializable;
 import javafx.scene.image.Image;
 
 /**
  *
  * @author Hate
  */
-public class ClientData {
+public class ClientData implements Serializable {
 
     private String eMail;
     private String password;

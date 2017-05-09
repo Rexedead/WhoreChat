@@ -6,12 +6,11 @@
 package sample.Client.Controllers;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -25,9 +24,16 @@ import sample.MessageType;
  * @author Hate
  */
 public class ModalWindowController{
+    private Client client;
     
     @FXML
     private Button ExitButton;
+    
+    @FXML
+    private Label statusLabel = new Label();
+    
+    @FXML
+    private Label regStatusLabel = new Label();
     
     @FXML
     private Button LoginButton;
@@ -65,7 +71,7 @@ public class ModalWindowController{
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    Client.sendSystemMessage(new ClientData(
+                    client.sendSystemMessage(new ClientData(
                             LoginField.getText(), 
                             PasswordField.getText()));
                     isAuthorise();
@@ -79,7 +85,7 @@ public class ModalWindowController{
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    Client.sendSystemMessage(new ClientData(
+                    client.sendSystemMessage(new ClientData(
                             RegPasswordField.getText(), 
                             RegEMailField.getText(), 
                             RegNickNameField.getText()));
@@ -93,21 +99,34 @@ public class ModalWindowController{
     
     public void cancel(){
         try {
-            Client.disconnect();
+            client.disconnect();
         } catch (IOException ex) {
         
         }
         Stage stage = (Stage)ExitButton.getScene().getWindow();
         stage.close();
     }
-    
+    public void setClient(Client client){
+        this.client = client;
+    }
     private void isAuthorise(){
         try {
-            Message message = (Message) Client.messageUpdater();
+            Message message = (Message) client.messageUpdater();
             if(message.getMessageType() == MessageType.AUTHORISATION){
-                Client.setAuthorisated();
                 Stage stage = (Stage)ExitButton.getScene().getWindow();
                 stage.close();
+            }else{
+                switch(message.getId()){
+                    case("email exist"):
+                        regStatusLabel.setText("Email address already in use");
+                        break;
+                    case("nickname exist"):
+                        regStatusLabel.setText("Nickname already in use");
+                        break;
+                    case("invalid"):
+                        statusLabel.setText("Wrong login or password");
+                        break;
+                }
             }
         } catch (IOException | ClassNotFoundException ex) {
             
