@@ -48,7 +48,7 @@ public class Server{
             server = new ServerSocket(PORT);                //Попытка запустить сервер на порте PORT
             System.out.println("Server online");
 
-//            new DBworker().writeToSQLwhenRegister(new ClientData("pw","22226@","lg"));
+            new DBworker().writeToSQLwhenRegister(new ClientData("pw","22226@","lg"));
 
         } catch (IOException ex) {
             System.out.println

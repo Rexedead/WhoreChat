@@ -27,65 +27,54 @@ public class DBworker {
 
 
     public String readFromSQLwhenLogining(String loginFromClient, String passwordFromClient) {
-
-        try {
-            resultSet = statement.executeQuery("select id from users where " +
-                    "(nickname = '" + loginFromClient + "' and password = '" + passwordFromClient + "')");
-            while (resultSet.next()) {
-                idReturnForNewUser = resultSet.getString("id");
-            }
-            resultSet.close();
-        } catch (SQLException e1) {
-            System.out.println("Wrong SQL request");
-        }
-
-        if (idReturnForNewUser != null) {
+        if (statement != null) {
             try {
+                resultSet = statement.executeQuery("select id from users where " +
+                        "(nickname = '" + loginFromClient + "' and password = '" + passwordFromClient + "')");
+                while (resultSet.next()) {
+                    idReturnForNewUser = resultSet.getString("id");
+                }
+                resultSet.close();
                 statement.close();
-            } catch (SQLException e) {
-                System.out.println("Cant close statement");
-            }
-            return idReturnForNewUser;
+            } catch (SQLException e1) {
+                System.out.println("Wrong SQL request");
+                return "noDBconnect";
 
-        } else return "invalid";
+            }
+            return idReturnForNewUser == null ? "invalid" : idReturnForNewUser;
+        }
+        return "noDBconnect";
     }
+
 
     public String writeToSQLwhenRegister(ClientData clientDataRegistrationStrings) {
 
         String regNickame = clientDataRegistrationStrings.getNickName();
         String regMail = clientDataRegistrationStrings.getMail();
         String regPassword = clientDataRegistrationStrings.getPassword();
-
-        try {
-            if (checkNewRegisterNickname(regNickame) && checkNewRegisterMail(regMail)) {
-                statement.execute("insert into users (nickname, password, email ) values" +
-                        " ('" + regNickame + "','" + regPassword + "','" + regMail + "')");
-                resultSet = statement.executeQuery("select id from users where " +
-                        "(nickname = '" + clientDataRegistrationStrings.getNickName() + "' " +
-                        "and password = '" + clientDataRegistrationStrings.getPassword() + "')");
-                while (resultSet.next()) {
-                    idReturnForNewUser = resultSet.getString("id");
-                }
-            } else {
-                statement.close();
-                return checkDuplId == null  ?  "Login exist" : "email exist";
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Cant close statement");
-        }
-
-        if (idReturnForNewUser != null) {
+        if (statement != null) {
             try {
-                statement.close();
+                if (checkNewRegisterNickname(regNickame) && checkNewRegisterMail(regMail)) {
+                    statement.execute("insert into users (nickname, password, email ) values" +
+                            " ('" + regNickame + "','" + regPassword + "','" + regMail + "')");
+                    resultSet = statement.executeQuery("select id from users where " +
+                            "(nickname = '" + clientDataRegistrationStrings.getNickName() + "' " +
+                            "and password = '" + clientDataRegistrationStrings.getPassword() + "')");
+                    while (resultSet.next()) {
+                        idReturnForNewUser = resultSet.getString("id");
+                    }
+                    statement.close();
+                    return idReturnForNewUser;
+                } else {
+                    statement.close();
+                    return checkDuplId == null ? "Login exist" : "email exist";
+                }
             } catch (SQLException e) {
-                System.out.println("Cant close statement");
+                System.out.println("Cant close statement/SQL error");
             }
-            return idReturnForNewUser;
-
-        } else return null;
+        }
+        return "noDBconnect";
     }
-
 
     private boolean checkNewRegisterMail(String regMail) {
         try {
