@@ -15,13 +15,12 @@ import javafx.scene.image.Image;
 public class User extends ClientData implements Serializable {
 
     public User(Image avatar,String id, String nickName) {
-        super(id, nickName);
+        super(avatar, id, nickName);
 
     }
 
     public User(String id, String nickName) {
         super(id, nickName);
-
     }
 
     @Override

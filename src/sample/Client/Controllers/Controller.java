@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -25,6 +26,7 @@ import sample.Client.Client;
 import sample.Client.ListsModels.MessageList;
 import sample.Client.ListsModels.UserList;
 import sample.Message;
+import sample.User;
 
 public class Controller {
 
@@ -76,6 +78,7 @@ public class Controller {
     
     @FXML
     public void initialize() throws IOException{
+        System.out.println(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
         ModalWindowController = FXMLLoader.getController();
@@ -121,6 +124,8 @@ public class Controller {
     
     private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
         Client client = new Client(serverAddress, serverPort);
+        msgList.add(new User(new Image("file:D:/projects/WhoreChat/src/sample/resources/12.jpg"),
+        "12", "Hate"), new Message("У меня получилось!!!"));
         if (client.isConnected()) {
             ModalWindowController.setClient(client);
             isConnected = true;
