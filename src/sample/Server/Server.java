@@ -6,6 +6,13 @@
 package sample.Server;
 
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import sample.ClientData;
+import sample.Message;
+import sample.MessageType;
+import sample.User;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,13 +21,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-import javax.imageio.ImageIO;
-import sample.ClientData;
-import sample.Message;
-import sample.MessageType;
-import sample.User;
 
 /**
  *
@@ -47,7 +47,7 @@ public class Server{
             server = new ServerSocket(PORT);                //Попытка запустить сервер на порте PORT
             System.out.println("Server online");
 
-//            new DBworker().writeToSQLwhenRegister(new ClientData("pw","222@","lg"));
+//            new DBworker().writeToSQLwhenRegister(new ClientData("pw","22226@","lg"));
 
         } catch (IOException ex) {
             System.out.println
@@ -102,7 +102,7 @@ public class Server{
                     ClientData = (ClientData)in.readObject();
                     if(ClientData.isSingUp()){
                         clientId = new DBworker().writeToSQLwhenRegister(ClientData);
-                            if(!clientId.endsWith("exist")){
+                            if(!clientId.endsWith("exist") && !clientId.isEmpty()){
                                 Users.add(new User(clientId,ClientData.getNickName()));
                                 out.writeObject(new Message(MessageType.AUTHORISATION));
                                 break;
@@ -124,7 +124,7 @@ public class Server{
             } catch (IOException | ClassNotFoundException | ClassCastException ex) {
                 try {
                     close();
-                } catch (IOException ex1) {}
+                } catch (IOException ex1) {}           
             }
             try {
                 while(true){

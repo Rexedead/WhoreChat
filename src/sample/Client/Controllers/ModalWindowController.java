@@ -14,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import sample.Client.Client;
 import sample.ClientData;
 import sample.Message;
@@ -137,6 +136,9 @@ public class ModalWindowController{
                     case("invalid"):
                         statusLabel.setText("Wrong login or password");
                         break;
+                    case("Try again later"):
+                        statusLabel.setText("Try again later");
+                        regStatusLabel.setText("Try again later");
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {

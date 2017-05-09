@@ -1,11 +1,11 @@
 package sample;
 
-import sample.Server.Server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.Server.Server;
 
 public class Main extends Application {
 
@@ -21,13 +21,13 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        for(String arg:args){
-            if(arg.equalsIgnoreCase("-s")){     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
+//        for(String arg:args){
+//            if(arg.equalsIgnoreCase("-s")){     //  Проверка параметра запуска. Если среди аргументов запуска есть -s, то запускать сервер
                 new Server();                   // Здесь запускаем сервер
-                return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
-            }
-        }
-        launch(args);
+//                return;                         // В случае запуска сервера запретить дальнейшее выполнение метода main(Запуск клиентской части).
+//            }
+//        }
+//        launch(args);
 
     }
 }
