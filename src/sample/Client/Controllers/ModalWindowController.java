@@ -108,11 +108,7 @@ public class ModalWindowController{
     }
     
     public void cancel(){
-        try {
-            client.disconnect();
-        } catch (IOException ex) {
-        
-        }
+        client.disconnect();
         Stage stage = (Stage)ExitButton.getScene().getWindow();
         stage.close();
     }
@@ -124,7 +120,6 @@ public class ModalWindowController{
             Message message = (Message) client.messageUpdater();
             if(message.getMessageType() == MessageType.AUTHORISATION){
                 Stage stage = (Stage)ExitButton.getScene().getWindow();
-                client.disconnect();
                 stage.close();
             }else{
                 switch(message.getId()){

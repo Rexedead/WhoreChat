@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.stage.StageStyle;
 
 public class Controller {
 
@@ -121,7 +122,7 @@ public class Controller {
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
         ModalWindowController = FXMLLoader.getController();
-        Client client = new Client(serverAddress, serverPort);
+        client = new Client(serverAddress, serverPort);
         msgList.add(new User(new Image("file:D:/projects/WhoreChat/src/sample/resources/12.jpg"),
         "12", "Hate"), new Message("У меня получилось!!!"));
         if (client.isConnected()) {
@@ -165,15 +166,12 @@ public class Controller {
         window.setResizable(false);
         window.setScene(new Scene(modalWindow));
         window.initModality(Modality.WINDOW_MODAL);
-        window.setOnCloseRequest((WindowEvent event) -> {
-            ModalWindowController.cancel();
-        });
+        window.initStyle(StageStyle.UNDECORATED);
         window.initOwner(node.getScene().getWindow());
         window.showAndWait();
     }
     
     class MessageUpdater extends Thread{
-
         @Override
         public void run() {
 

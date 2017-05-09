@@ -19,7 +19,7 @@ public class ClientData implements Serializable {
     private Image avatar;
     private String id;
     private String nickName;
-    private boolean singUp = false;
+    private boolean signUp = false;
 
     public ClientData(String eMail, String password) {
         this.eMail = eMail;
@@ -37,14 +37,14 @@ public class ClientData implements Serializable {
         this.avatar = avatar;
         this.eMail = eMail;
         this.nickName = nickName;
-        singUp = true;
+        signUp = true;
     }
 
     public ClientData(String password, String eMail, String nickName) {
         this.password = password;
         this.eMail = eMail;
         this.nickName = nickName;
-        singUp = true;
+        signUp = true;
     }
 
     public String getPassword() {
@@ -55,8 +55,8 @@ public class ClientData implements Serializable {
         this.password = password;
     }
 
-    public boolean isSingUp() {
-        return singUp;
+    public boolean isSignUp() {
+        return signUp;
     }
 
     public Image getAvatar() {

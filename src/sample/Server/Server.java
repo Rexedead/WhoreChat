@@ -100,7 +100,7 @@ public class Server{
             try {
                 while(true){
                     ClientData = (ClientData)in.readObject();
-                    if(ClientData.isSingUp()){
+                    if(ClientData.isSignUp()){
                         clientId = new DBworker().writeToSQLwhenRegister(ClientData);
                             if(clientId.endsWith("exist") || clientId.equals("noDBconnect")){
                                 if(clientId.equals("noDBconnect")){
@@ -116,17 +116,17 @@ public class Server{
                             }
                     }else{
                         clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
-                        if(!clientId.equals("invalid") && !clientId.equals("noDBconnect")){
-                            Users.add(new User(clientId,ClientData.getNickName()));
-                            out.writeObject(new Message(MessageType.AUTHORISATION));
-                            break;
-                        }else{
+                        if(clientId.equals("invalid") || clientId.equals("noDBconnect")){
                             if(clientId.equals("noDBconnect")){
                                 out.writeObject(new Message("Try again later", MessageType.MESSAGE));
                                 close();
                             }else{
                                 out.writeObject(new Message(clientId, MessageType.MESSAGE));
                             }
+                        }else{
+                            Users.add(new User(clientId,ClientData.getNickName()));
+                            out.writeObject(new Message(MessageType.AUTHORISATION));
+                            break;
                         }
                     }
                 }
