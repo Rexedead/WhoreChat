@@ -47,7 +47,7 @@ public class DBworker {
             }
             return idReturnForNewUser;
 
-        } else return null;
+        } else return "invalid";
     }
 
     public String writeToSQLwhenRegister(ClientData clientDataRegistrationStrings) {
@@ -57,7 +57,7 @@ public class DBworker {
         String regPassword = clientDataRegistrationStrings.getPassword();
 
         try {
-            if (checkNewRegisterNickname(regNickame) || checkNewRegisterMail(regMail)) {
+            if (checkNewRegisterNickname(regNickame) && checkNewRegisterMail(regMail)) {
                 statement.execute("insert into users (nickname, password, email ) values" +
                         " ('" + regNickame + "','" + regPassword + "','" + regMail + "')");
                 resultSet = statement.executeQuery("select id from users where " +
@@ -66,7 +66,10 @@ public class DBworker {
                 while (resultSet.next()) {
                     idReturnForNewUser = resultSet.getString("id");
                 }
-            } else return "exist";
+            } else {
+                statement.close();
+                return checkDuplId == null  ?  "Login exist" : "email exist";
+            }
 
         } catch (SQLException e) {
             System.out.println("Cant close statement");
@@ -84,7 +87,6 @@ public class DBworker {
     }
 
 
-
     private boolean checkNewRegisterMail(String regMail) {
         try {
             resultSet = statement.executeQuery("select email from users where " +
@@ -98,7 +100,6 @@ public class DBworker {
 
         return checkDuplMail == null;
     }
-
 
 
     private boolean checkNewRegisterNickname(String regNickame) {

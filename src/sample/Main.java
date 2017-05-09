@@ -1,12 +1,11 @@
 package sample;
 
-import sample.Server.Server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import sample.Client.Client;
+import sample.Server.Server;
 
 public class Main extends Application {
 
@@ -16,7 +15,7 @@ public class Main extends Application {
         primaryStage.setTitle("Whore Chat");
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(620);
-        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

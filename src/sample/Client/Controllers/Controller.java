@@ -1,32 +1,31 @@
 package sample.Client.Controllers;
 
-import sample.Client.ListsModels.FriendList;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import static java.lang.Thread.sleep;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Client.Client;
+import sample.Client.ListsModels.FriendList;
 import sample.Client.ListsModels.MessageList;
 import sample.Client.ListsModels.UserList;
 import sample.Message;
 import sample.User;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Controller {
 
