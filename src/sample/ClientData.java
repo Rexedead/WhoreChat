@@ -21,8 +21,8 @@ public class ClientData implements Serializable {
     private String nickName;
     private boolean signUp = false;
 
-    public ClientData(String eMail, String password) {
-        this.eMail = eMail;
+    public ClientData(String nickName, String password) {
+        this.nickName = nickName;
         this.password = password;
     }
 

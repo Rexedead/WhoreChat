@@ -115,7 +115,7 @@ public class Server{
                                 break;
                             }
                     }else{
-                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getPassword(), ClientData.getNickName());
+                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getNickName(), ClientData.getPassword());
                         if(clientId.equals("invalid") || clientId.equals("noDBconnect")){
                             if(clientId.equals("noDBconnect")){
                                 out.writeObject(new Message("Try again later", MessageType.MESSAGE));
