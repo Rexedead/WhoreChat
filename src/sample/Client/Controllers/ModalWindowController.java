@@ -73,10 +73,14 @@ public class ModalWindowController{
             @Override
             public void handle(ActionEvent event) {
                 try {
+                if(!LoginField.getText().isEmpty() && PasswordField.getText().isEmpty()){
                     client.sendSystemMessage(new ClientData(
                             LoginField.getText(), 
                             PasswordField.getText()));
                     isAuthorise();
+                }else{
+                    statusLabel.setText("Error: some field if empty");
+                }
                 } catch (IOException ex) {
                     
                 }

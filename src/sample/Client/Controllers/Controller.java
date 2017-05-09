@@ -131,7 +131,6 @@ public class Controller {
             ModalWindowController.setClient(client);
             isConnected = true;
             ConnectButton.setDisable(true);
-            FXMLLoader = new FXMLLoader();
             showLogInSignUpWindow(root);
             if (client.isConnected()){
                 new MessageUpdater().start();
@@ -140,6 +139,7 @@ public class Controller {
                 ConnectButton.setDisable(false);
             }
         }
+        FXMLLoader = new FXMLLoader();
     }
 
     public void sendMessage() throws IOException {
@@ -168,13 +168,8 @@ public class Controller {
         window.setResizable(false);
         window.setScene(new Scene(modalWindow));
         window.initModality(Modality.WINDOW_MODAL);
-//        window.initStyle(StageStyle.UNDECORATED);
-        window.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
-            @Override
-            public void handle(WindowEvent event) {
-                ModalWindowController.cancel();
-            }
+        window.setOnCloseRequest((WindowEvent event) -> {
+            ModalWindowController.cancel();
         });
         window.initOwner(node.getScene().getWindow());
         window.showAndWait();
