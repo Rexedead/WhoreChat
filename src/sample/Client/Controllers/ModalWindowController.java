@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import sample.Client.Client;
 import sample.ClientData;
 import sample.Message;
@@ -30,10 +31,10 @@ public class ModalWindowController{
     private Button ExitButton;
     
     @FXML
-    private Label statusLabel = new Label();
+    private Label statusLabel;
     
     @FXML
-    private Label regStatusLabel = new Label();
+    private Label regStatusLabel;
     
     @FXML
     private Button LoginButton;
@@ -66,15 +67,20 @@ public class ModalWindowController{
     private Button RegExitButton;
     
     public void initialize(){
+        
         LoginButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
                 try {
+                if(!LoginField.getText().isEmpty() && PasswordField.getText().isEmpty()){
                     client.sendSystemMessage(new ClientData(
                             LoginField.getText(), 
                             PasswordField.getText()));
                     isAuthorise();
+                }else{
+                    statusLabel.setText("Error: some field if empty");
+                }
                 } catch (IOException ex) {
                     
                 }
@@ -85,11 +91,16 @@ public class ModalWindowController{
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    client.sendSystemMessage(new ClientData(
-                            RegPasswordField.getText(), 
-                            RegEMailField.getText(), 
-                            RegNickNameField.getText()));
-                    isAuthorise();
+                    if(!RegPasswordField.getText().isEmpty() && !RegEMailField.getText().isEmpty()
+                            && !RegNickNameField.getText().isEmpty()){
+                        client.sendSystemMessage(new ClientData(
+                        RegPasswordField.getText(), 
+                        RegEMailField.getText(), 
+                        RegNickNameField.getText()));
+                        isAuthorise();
+                    }else{
+                        regStatusLabel.setText("Error: some field if empty");
+                    }
                 } catch (IOException ex) {
                     
                 }
