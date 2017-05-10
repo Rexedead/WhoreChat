@@ -40,16 +40,16 @@ public class Controller {
     private boolean isConnected = false;
     Client client;
     Message message;
-    
+
     private UserList userList = new UserList();
     private MessageList msgList = new MessageList();
     private FriendList FrndList = new FriendList();
-    
+
     private StringProperty connection = new SimpleStringProperty();
 
     @FXML
     private AnchorPane root;
-    
+
     @FXML
     private ListView MessageList;
 
@@ -76,12 +76,12 @@ public class Controller {
 
     @FXML
     private CheckBox CWSOptionButton;
-    
+
     private Parent modalWindow;
     private Stage window;
     private FXMLLoader FXMLLoader = new FXMLLoader();
     private ModalWindowController ModalWindowController;
-    
+
     @FXML
     public void initialize() throws IOException{
         connection.set("Connect");
@@ -92,11 +92,11 @@ public class Controller {
                 ConnectButton.setText(connection.getValue());
             }
         });
-        
+
         OnlineList.setItems(userList.getUserList());
         MessageList.setItems(msgList.getMessageList());
         FriendList.setItems(FrndList.getUserList());
-        
+
         Properties properties = new Properties();
         String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
@@ -121,8 +121,8 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-        
-        ConnectButton.setOnAction((ActionEvent event) -> {           
+
+        ConnectButton.setOnAction((ActionEvent event) -> {
             try {
                 if(ConnectButton.getText().equals("Disconnect")){
                     client.disconnect();
@@ -135,7 +135,7 @@ public class Controller {
             }
         });
     }
-    
+
     private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
@@ -170,15 +170,15 @@ public class Controller {
             MessageList.getItems().add(new HBox(new Label("You are not online")));
         }
     }
-    
-    public void sendSystemMessage(Object object) throws IOException{           
-        client.sendSystemMessage(object);        
+
+    public void sendSystemMessage(Object object) throws IOException{
+        client.sendSystemMessage(object);
     }
 
     public void autoFillServerIPPort() {
         this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
     }
-    
+
     public void showLogInSignUpWindow(Node node) throws IOException{
         window = new Stage();
         window.setTitle("Log In");
@@ -202,6 +202,7 @@ public class Controller {
                         Object q = client.messageUpdater();
 
                         if (q instanceof ArrayList) {
+
                             userList.add((ArrayList<User>) q);
                         }
 
@@ -231,7 +232,6 @@ public class Controller {
                                 case USERONLINE:
                                     break;
                                 case USEROFFLINE:
-                                    System.out.println("11");
                                     break;
                             }
                         }else if (q instanceof User){
