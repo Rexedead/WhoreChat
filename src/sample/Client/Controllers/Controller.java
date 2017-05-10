@@ -21,16 +21,20 @@ import sample.Client.ViewLists.FriendList;
 import sample.Client.ViewLists.MessageList;
 import sample.Client.ViewLists.UserList;
 import sample.Message;
-import sample.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.concurrent.Task;
+import static javafx.scene.input.KeyCode.T;
+import sample.User;
 
 public class Controller {
 
@@ -192,60 +196,57 @@ public class Controller {
 
     class MessageUpdater extends Thread{
 
-
         @Override
-        public void run() {
+        public void run(){
+            while (true) {
+                try {
+                    Object q = client.messageUpdater();
 
-            try {
-                while (true) {
-                    try {
-                        Object q = client.messageUpdater();
-
-                        if (q instanceof ArrayList) {
-                            userList.add((ArrayList<User>) q);
-                        }
-
-
-                        else if (q instanceof Message) {
-                            switch (((Message) q).getMessageType()){
-
-                                case MESSAGE:
-                                    message = (Message) q;
-                                    msgList.add(userList.getUserById(message.getId()), message);
-                                    break;
-
-                                case WHISPER:
-                                    break;
-                                case EXIT:
-                                    break;
-                                case AVATAR:
-                                    break;
-                                case NICKNAME:
-                                    break;
-                                case FILEMESSAGE:
-                                    break;
-                                case ADDFRIEND:
-                                    break;
-                                case DELFRIEND:
-                                    break;
-                                case USERONLINE:
-                                    break;
-                                case USEROFFLINE:
-                                    System.out.println("11");
-                                    break;
-                            }
-                        }else if (q instanceof User){
-                            userList.add((User)q);
-                        }
-
-                    } catch (ClassCastException e) {
-
+                    if (q instanceof ArrayList) {
+                        userList.add((ArrayList<User>) q);
                     }
+
+
+                    else if (q instanceof Message) {
+                        switch (((Message) q).getMessageType()){
+
+                            case MESSAGE:
+                                message = (Message) q;
+                                msgList.add(userList.getUserById(message.getId()), message);
+                                break;
+
+                            case WHISPER:
+                                break;
+                            case EXIT:
+                                break;
+                            case AVATAR:
+                                break;
+                            case NICKNAME:
+                                break;
+                            case FILEMESSAGE:
+                                break;
+                            case ADDFRIEND:
+                                break;
+                            case DELFRIEND:
+                                break;
+                            case USERONLINE:
+                                break;
+                            case USEROFFLINE:
+                                System.out.println("11");
+                                break;
+                        }
+                    }else if (q instanceof User){
+                        userList.add((User)q);
+                    }
+
+                } catch (ClassCastException e) {
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                connection.setValue("Connect");
-                interrupt();
-            }
+            }   
         }
     }
 }
