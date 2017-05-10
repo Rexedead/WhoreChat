@@ -105,6 +105,7 @@ public class Server{
                 autorisationCheck();
                 out.writeObject(Users);
                 sendToAllUsers(new User(ClientData.getAvatar(), clientId, ClientData.getNickName()));
+                ClientData = null;
             } catch (IOException | ClassNotFoundException | ClassCastException ex) {
                 try {
                     close();
@@ -139,7 +140,7 @@ public class Server{
         private void close() throws IOException{            //Метод для закрытия потоков чтения и записи клиента
             in.close();
             for(int i = 0; i < Users.size(); i++){
-                if(Users.get(i).getId() == ClientData.getId()){
+                if(Users.get(i).getId() == clientId){
                     Users.remove(i);
                 }
             }
@@ -206,19 +207,20 @@ public class Server{
             switch(message.getMessageType()){
                             case MESSAGE:
                                 System.out.println("clientID "+clientId+": Message: "+ message.getMessage());
-                                message.setId(ClientData.getId());
+                                message.setId(clientId);
                                 sendToAllUsers(message);
                                 break;
                             case WHISPER:
                                 for (Client client : clients) {
                                     if(client.getID().equals(message.getId())){
+                                        message.setId(clientId);
                                         client.out.writeObject(message);
                                     }
                                 }
                                 break;
                             case FILEMESSAGE:
                                 System.out.println("FileMessage from client: "+message.getMessage());
-                                message.setId(ClientData.getId());
+                                message.setId(clientId);
                                 sendToAllUsers(message);
                                 break;
                             case AVATAR:
