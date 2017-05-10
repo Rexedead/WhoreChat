@@ -34,7 +34,7 @@ public class UserList {
     public void delete(int id){users.remove(id);}
     
     public void add(ArrayList<User> users){
-        this.users = FXCollections.observableArrayList();
+//        this.users = FXCollections.observableArrayList();
         for (User user : users) {
             add(user);
         }

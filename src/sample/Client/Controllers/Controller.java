@@ -28,9 +28,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.concurrent.Task;
+import static javafx.scene.input.KeyCode.T;
+import sample.User;
 
 public class Controller {
 
@@ -49,7 +54,7 @@ public class Controller {
 
     @FXML
     private AnchorPane root;
-
+    
     @FXML
     private ListView MessageList;
 
@@ -76,12 +81,12 @@ public class Controller {
 
     @FXML
     private CheckBox CWSOptionButton;
-
+    
     private Parent modalWindow;
     private Stage window;
     private FXMLLoader FXMLLoader = new FXMLLoader();
     private ModalWindowController ModalWindowController;
-
+    
     @FXML
     public void initialize() throws IOException{
         connection.set("Connect");
@@ -92,11 +97,11 @@ public class Controller {
                 ConnectButton.setText(connection.getValue());
             }
         });
-
+        
         OnlineList.setItems(userList.getUserList());
         MessageList.setItems(msgList.getMessageList());
         FriendList.setItems(FrndList.getUserList());
-
+        
         Properties properties = new Properties();
         String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
@@ -121,8 +126,8 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-
-        ConnectButton.setOnAction((ActionEvent event) -> {
+        
+        ConnectButton.setOnAction((ActionEvent event) -> {           
             try {
                 if(ConnectButton.getText().equals("Disconnect")){
                     client.disconnect();
@@ -135,7 +140,7 @@ public class Controller {
             }
         });
     }
-
+    
     private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
@@ -170,15 +175,15 @@ public class Controller {
             MessageList.getItems().add(new HBox(new Label("You are not online")));
         }
     }
-
-    public void sendSystemMessage(Object object) throws IOException{
-        client.sendSystemMessage(object);
+    
+    public void sendSystemMessage(Object object) throws IOException{           
+        client.sendSystemMessage(object);        
     }
 
     public void autoFillServerIPPort() {
         this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
     }
-
+    
     public void showLogInSignUpWindow(Node node) throws IOException{
         window = new Stage();
         window.setTitle("Log In");
@@ -194,57 +199,55 @@ public class Controller {
 
 
         @Override
-        public void run() {
+        public void run(){
+            while (true) {
+                try {
+                    Object q = client.messageUpdater();
 
-            try {
-                while (true) {
-                    try {
-                        Object q = client.messageUpdater();
-
-                        if (q instanceof ArrayList) {
-
-                            userList.add((ArrayList<User>) q);
-                        }
-
-
-                        else if (q instanceof Message) {
-                            switch (((Message) q).getMessageType()){
-
-                                case MESSAGE:
-                                    message = (Message) q;
-                                    msgList.add(userList.getUserById(message.getId()), message);
-                                    break;
-
-                                case WHISPER:
-                                    break;
-                                case EXIT:
-                                    break;
-                                case AVATAR:
-                                    break;
-                                case NICKNAME:
-                                    break;
-                                case FILEMESSAGE:
-                                    break;
-                                case ADDFRIEND:
-                                    break;
-                                case DELFRIEND:
-                                    break;
-                                case USERONLINE:
-                                    break;
-                                case USEROFFLINE:
-                                    break;
-                            }
-                        }else if (q instanceof User){
-                            userList.add((User)q);
-                        }
-
-                    } catch (ClassCastException e) {
-
+                    if (q instanceof ArrayList) {
+                        userList.add((ArrayList<User>) q);
                     }
+
+
+                    else if (q instanceof Message) {
+                        switch (((Message) q).getMessageType()){
+
+                            case MESSAGE:
+                                message = (Message) q;
+                                msgList.add(userList.getUserById(message.getId()), message);
+                                break;
+
+                            case WHISPER:
+                                break;
+                            case EXIT:
+                                break;
+                            case AVATAR:
+                                break;
+                            case NICKNAME:
+                                break;
+                            case FILEMESSAGE:
+                                break;
+                            case ADDFRIEND:
+                                break;
+                            case DELFRIEND:
+                                break;
+                            case USERONLINE:
+                                break;
+                            case USEROFFLINE:
+                                System.out.println("11");
+                                break;
+                        }
+                    }else if (q instanceof User){
+                        userList.add((User)q);
+                    }
+
+                } catch (ClassCastException e) {
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                connection.setValue("Connect");
-                interrupt();
             }
         }
     }
