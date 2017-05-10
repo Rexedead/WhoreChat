@@ -8,11 +8,9 @@ package sample.Client.ListsModels;
 import java.io.IOException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import sample.Client.Controllers.MessageListViewController;
 import sample.Message;
 import sample.User;
 
