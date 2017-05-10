@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample.Client.ListsModels;
+package sample.Client.ListsModels.ListModels;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;

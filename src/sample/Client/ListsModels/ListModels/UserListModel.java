@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample.Client.ListsModels;
+package sample.Client.ListsModels.ListModels;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -18,6 +18,7 @@ public class UserListModel extends HBox{
     private ImageView Avatar = new ImageView();
     private Label NickName = new Label();
     private String UserId;
+    
     
     public UserListModel(String UserId){
         this.UserId = UserId;

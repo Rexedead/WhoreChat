@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample.Client.ListsModels;
+package sample.Client.ViewLists;
 
-import sample.Client.ListsModels.UserList;
+import sample.Client.ViewLists.UserList;
 
 /**
  *

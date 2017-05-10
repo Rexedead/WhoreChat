@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample.Client.ListsModels;
+package sample.Client.ListsModels.ListModels;
 
 import java.io.File;
 import javafx.scene.image.Image;
@@ -25,7 +25,7 @@ public class FileMessageModel extends MessageListModel{
     
     public void setDATA(File DATA){
         this.DATA = DATA;
-        MSGData.setImage(new Image("file:/sample/resources/FileMessageIcon.png"));
+        MSGData.setImage(new Image("/sample/resources/FileMessageIcon.png"));
     }
     
     public File getDATA(){return DATA;}
