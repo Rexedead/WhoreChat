@@ -1,5 +1,7 @@
 package sample.Client.Controllers;
 
+import com.sun.javafx.beans.event.AbstractNotifyListener;
+import com.sun.javafx.binding.BidirectionalBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import sample.Client.Client;
 import sample.Client.ListsModels.FriendList;
 import sample.Client.ListsModels.MessageList;
@@ -27,6 +29,11 @@ import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.stage.StageStyle;
 
 public class Controller {
 
@@ -40,6 +47,8 @@ public class Controller {
     private UserList userList = new UserList();
     private MessageList msgList = new MessageList();
     private FriendList FrndList = new FriendList();
+    
+    private StringProperty connection = new SimpleStringProperty();
 
     @FXML
     private AnchorPane root;
@@ -78,6 +87,15 @@ public class Controller {
     
     @FXML
     public void initialize() throws IOException{
+        connection.set("Connect");
+        connection.addListener(new AbstractNotifyListener() {
+
+            @Override
+            public void invalidated(Observable observable) {
+                ConnectButton.setText(connection.getValue());
+            }
+        });
+        
         OnlineList.setItems(userList.getUserList());
         MessageList.setItems(msgList.getMessageList());
         FriendList.setItems(FrndList.getUserList());
@@ -109,8 +127,12 @@ public class Controller {
         
         ConnectButton.setOnAction((ActionEvent event) -> {           
             try {
-                connect(SocketInputArea.getText().split(":")[0],
-                        Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+                if(ConnectButton.getText().equals("Disconnect")){
+                    client.disconnect();
+                }else{
+                    connect(SocketInputArea.getText().split(":")[0],
+                    Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+                }
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -127,13 +149,12 @@ public class Controller {
         if (client.isConnected()) {
             ModalWindowController.setClient(client);
             isConnected = true;
-            ConnectButton.setDisable(true);
+            connection.set("Disconnect");
             showLogInSignUpWindow(root);
             if (client.isConnected()){
                 new MessageUpdater().start();
             }else{
-                isConnected = false;
-                ConnectButton.setDisable(false);
+                connection.setValue("Connect");
             }
         }
         FXMLLoader = new FXMLLoader();
@@ -183,9 +204,7 @@ public class Controller {
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
-                MessageList.getItems().add("Connection lost");
-                ConnectButton.setDisable(false);
-                isConnected = false;
+                connection.setValue("Connect");
                 interrupt();
             }
         }

@@ -8,11 +8,9 @@ package sample.Client.ListsModels;
 import java.io.IOException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import sample.Client.Controllers.MessageListViewController;
 import sample.Message;
 import sample.User;
 
@@ -21,53 +19,34 @@ import sample.User;
  * @author Hate
  */
 public class MessageList {
-     private ObservableList<Parent> messages = FXCollections.observableArrayList();
-     FXMLLoader FXMLLoader = new FXMLLoader();
-     Parent MessageArea;
-     MessageListViewController MessageListViewController;
-     
-     public void add(User user, Message message) throws IOException{
-        FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/messageListView.fxml"));
-        MessageArea = FXMLLoader.load();
-        MessageListViewController = FXMLLoader.getController();
-        MessageListViewController.setAvatar(user.getAvatar());
-        MessageListViewController.setNickName(user.getNickName() + ": ");
-        MessageListViewController.setMSG(message.getMessage());
-        messages.add(MessageArea);
-        FXMLLoader = new FXMLLoader();
-        
+    private ObservableList<Parent> messages = FXCollections.observableArrayList();
+    MessageListModel MSG = new MessageListModel();
+    FileMessageModel FMSG = new FileMessageModel();
+    ImageMessageModel IMSG = new ImageMessageModel();
+
+    public void add(User user, Message message) throws IOException{
+        MSG.setAvatar(user.getAvatar());
+        MSG.setNickName(user.getNickName());
+        MSG.setMessage(message.getMessage());
+        messages.add(MSG);
     }
     
-//    public void delete(int id){messages.remove(id);}
-//    
-//    public String getUserId(int id){
-//        Label label = (Label)messages.get(id).getChildren().get(2);
-//        return label.getText();
-//    }
-     
+    public void delete(int id){messages.remove(id);}
+    
     public void addImageMessage(User user, Message message) throws IOException{
-        FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/messageListView.fxml"));
-        MessageArea = FXMLLoader.load();
-        MessageListViewController = FXMLLoader.getController();
-        MessageListViewController.setAvatar(user.getAvatar());
-        MessageListViewController.setNickName(user.getNickName() + ": ");
-        MessageListViewController.setMSG(message.getMessage());
-        MessageListViewController.setMsgData(message.getImg());
-        messages.add(MessageArea);
-        FXMLLoader = new FXMLLoader();
+        IMSG.setAvatar(user.getAvatar());
+        IMSG.setNickName(user.getNickName());
+        IMSG.setMessage(message.getMessage());
+        IMSG.setImage(message.getImg());
+        messages.add(IMSG);
     }
     
     public void addFileMessage(User user, Message message) throws IOException{
-        FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/messageListView.fxml"));
-        MessageArea = FXMLLoader.load();
-        MessageListViewController  = FXMLLoader.getController();
-        MessageListViewController = FXMLLoader.getController();
-        MessageListViewController.setAvatar(user.getAvatar());
-        MessageListViewController.setNickName(user.getNickName() + ": ");
-        MessageListViewController.setMSG(message.getMessage());
-        MessageListViewController.setFileMSG();
-        messages.add(MessageArea);
-        FXMLLoader = new FXMLLoader();
+        FMSG.setAvatar(user.getAvatar());
+        FMSG.setNickName(user.getNickName());
+        FMSG.setMessage(message.getMessage());
+        FMSG.setDATA(message.getFile());
+        messages.add(FMSG);
     }
      
     public void addSystem(Message message){
