@@ -191,10 +191,7 @@ public class Controller {
     }
 
     class MessageUpdater extends Thread{
-        String myulg;
-        String myuid;
-        String uid;
-        String ulg;
+
 
         @Override
         public void run() {
@@ -206,21 +203,41 @@ public class Controller {
 
                         if (q instanceof ArrayList) {
                             userList.add((ArrayList<User>) q);
-                            }
+                        }
 
 
                         else if (q instanceof Message) {
+                            switch (((Message) q).getMessageType()){
+
+                                case MESSAGE:
                                     message = (Message) q;
-                                   System.out.println(((Message) q).getMessageType());
-                                    System.out.println(userList.getUserList().size());
-                                    System.out.println(((Message) q).getMessage());
-                                    String messageID = ((Message) q).getId();
-                                    System.out.println(messageID);
-                                    msgList.add(new User(userList.getUserById(messageID).getNickName(),userList.getUserById(messageID).getId()), message);
+                                    msgList.add(userList.getUserById(message.getId()), message);
+                                    break;
 
-
-
+                                case WHISPER:
+                                    break;
+                                case EXIT:
+                                    break;
+                                case AVATAR:
+                                    break;
+                                case NICKNAME:
+                                    break;
+                                case FILEMESSAGE:
+                                    break;
+                                case ADDFRIEND:
+                                    break;
+                                case DELFRIEND:
+                                    break;
+                                case USERONLINE:
+                                    break;
+                                case USEROFFLINE:
+                                    System.out.println("11");
+                                    break;
+                            }
+                        }else if (q instanceof User){
+                            userList.add((User)q);
                         }
+
                     } catch (ClassCastException e) {
 
                     }
