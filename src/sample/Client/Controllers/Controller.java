@@ -28,14 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Properties;
-import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.concurrent.Task;
-import static javafx.scene.input.KeyCode.T;
-import sample.User;
 
 public class Controller {
 
@@ -146,10 +141,6 @@ public class Controller {
         modalWindow = FXMLLoader.load();
         ModalWindowController = FXMLLoader.getController();
         client = new Client(serverAddress, serverPort);
-//        userList.add(new User(null,
-//        "12", "Hate"));
-//        msgList.add(new User(null,
-//        "12", "Hate"), new Message("У меня получилось!!!"));
         if (client.isConnected()) {
             ModalWindowController.setClient(client);
             isConnected = true;
@@ -206,10 +197,11 @@ public class Controller {
 
                     if (q instanceof ArrayList) {
                         userList.add((ArrayList<User>) q);
+                        userList.delete(userList.getUserList().size()-1);  //удаляем себя из общего массива, тк добавляемся через obj User
                     }
 
 
-                    else if (q instanceof Message) {
+                     if (q instanceof Message) {
                         switch (((Message) q).getMessageType()){
 
                             case MESSAGE:
@@ -234,7 +226,7 @@ public class Controller {
                             case USERONLINE:
                                 break;
                             case USEROFFLINE:
-                                System.out.println("11");
+                                userList.delete(userList.getUserList().indexOf(message.getId()));
                                 break;
                         }
                     }else if (q instanceof User){
