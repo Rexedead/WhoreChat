@@ -36,6 +36,10 @@ public class UserListModel extends HBox{
         this.NickName.setText(NickName);
     }
     
+    public String getNickName(){return NickName.getText();}
+    
+    public Image getAvatar(){return Avatar.getImage();}
+    
     public void setUserId(String UserId){
         this.UserId = UserId;
     }

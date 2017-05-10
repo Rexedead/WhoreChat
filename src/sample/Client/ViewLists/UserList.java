@@ -40,6 +40,15 @@ public class UserList {
         }
     }
     
+    public User getUserById(String id){
+        for (UserListModel user : users) {
+            if(user.getUserId().equalsIgnoreCase(id)){
+                return new User(user.getAvatar(), id, user.getNickName());
+            }
+        }
+        return null;
+    }
+    
     public String getUserId(int id){
         return users.get(id).getUserId();
     }
