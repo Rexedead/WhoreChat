@@ -206,7 +206,7 @@ public class Server{
             switch(message.getMessageType()){
                             case MESSAGE:
                                 System.out.println("clientID "+clientId+": Message: "+ message.getMessage());
-                                message.setId(ClientData.getId());
+                                message.setId(clientId);
                                 sendToAllUsers(message);
                                 break;
                             case WHISPER:
