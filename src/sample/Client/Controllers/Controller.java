@@ -12,7 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.stage.StageStyle;
 import sample.Client.Client;
 import sample.Client.ListsModels.FriendList;
 import sample.Client.ListsModels.MessageList;
@@ -27,7 +27,6 @@ import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.StageStyle;
 
 public class Controller {
 
