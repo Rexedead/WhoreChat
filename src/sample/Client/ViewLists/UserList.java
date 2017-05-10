@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample.Client.ListsModels;
+package sample.Client.ViewLists;
 
+import sample.Client.ListsModels.ListModels.UserListModel;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
 import sample.User;
 
 /**
@@ -20,9 +19,14 @@ import sample.User;
 public class UserList {
     private ObservableList<UserListModel> users = FXCollections.observableArrayList();
     UserListModel ULM;
+    private Image DefaultImage = new Image("/sample/resources/empty_user.jpg");
     public void add(User user){
         ULM = new UserListModel(user.getId());
-        ULM.setAvatar(user.getAvatar());
+        if(user.getAvatar() != null){
+            ULM.setAvatar(user.getAvatar());
+        }else{
+            ULM.setAvatar(DefaultImage);
+        }
         ULM.setNickName(user.getNickName());
         users.add(ULM);
     }

@@ -36,6 +36,10 @@ public class Server{
         serverUp();                                         //Конструктор для запуска сервера с портом "По умолчанию"
     }
     
+    public synchronized void AddUserInTheList(User user){
+        Users.add(user);
+    }
+    
     public Server(int port){
         this.PORT = port;                                   //Конструктор для запуска сервера с заданным портом
         serverUp();
@@ -98,39 +102,9 @@ public class Server{
                     + " cames now");                                            //Оповещение о том, что клиент в зашел в чат(серверное)
             Message message;                                                    //Строка для сообщений клиента
             try {
-                while(true){
-                    ClientData = (ClientData)in.readObject();
-                    if(ClientData.isSignUp()){
-                        clientId = new DBworker().writeToSQLwhenRegister(ClientData);
-                            if(clientId.endsWith("exist") || clientId.equals("noDBconnect")){
-                                if(clientId.equals("noDBconnect")){
-                                    out.writeObject(new Message("Try again later", MessageType.MESSAGE));
-                                    close();
-                                }else{
-                                    out.writeObject(new Message(clientId, MessageType.MESSAGE));
-                                }
-                            }else{
-                                Users.add(new User(null, clientId,ClientData.getNickName()));
-                                out.writeObject(new Message(MessageType.AUTHORISATION));
-                                break;
-                            }
-                    }else{
-                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getNickName(), ClientData.getPassword());
-                        if(clientId.equals("invalid") || clientId.equals("noDBconnect")){
-                            if(clientId.equals("noDBconnect")){
-                                out.writeObject(new Message("Try again later", MessageType.MESSAGE));
-                                close();
-                            }else{
-                                out.writeObject(new Message(clientId, MessageType.MESSAGE));
-                            }
-                        }else{
-                            Users.add(new User(null, clientId,ClientData.getNickName()));
-                            out.writeObject(new Message(MessageType.AUTHORISATION));
-                            break;
-                        }
-                    }
-                }
+                autorisationCheck();
                 out.writeObject(Users);
+                sendToAllUsers(new User(ClientData.getAvatar(), clientId, ClientData.getNickName()));
             } catch (IOException | ClassNotFoundException | ClassCastException ex) {
                 try {
                     close();
@@ -140,44 +114,7 @@ public class Server{
                 while(true){
                     message = (Message) in.readObject();                                    //Получаем сообщение клиента
                     try {
-                        switch(message.getMessageType()){
-                            case MESSAGE:
-                                System.out.println("Message from client: "+message.getMessage());
-                                message.setId(ClientData.getId());
-                                for (Client client : clients) {
-                                    client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
-                                }
-                                break;
-                            case WHISPER:
-                                for (Client client : clients) {
-                                    if(client.getID().equals(message.getId())){
-                                        client.out.writeObject(message);
-                                    }
-                                }
-                                break;
-                            case FILEMESSAGE:
-                                System.out.println("FileMessage from client: "+message.getMessage());
-                                message.setId(ClientData.getId());
-                                for (Client client : clients) {
-                                    client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере
-                                }
-                                break;
-                            case AVATAR:
-                                saveAvatar(message.getImg());
-                                break;
-                            case ADDFRIEND:
-                                break;
-                            case DELFRIEND:
-                                break;
-                            case NICKNAME:
-                                break;
-                            case EXIT:
-                                for (Client client : clients) {
-                                    client.out.writeObject(new Message(clientId, MessageType.USEROFFLINE)); //Отправляем полученное сообщение всем клиентам на сервере
-                                }
-                                close();
-                                break;
-                        }
+                        messageTypeAction(message);
                     } catch (NullPointerException e) {
                         
                     }
@@ -220,7 +157,87 @@ public class Server{
             }
         }
         
-        public String getID(){return clientId;}
+        private void sendToAllUsers(Object object){
+            for (Client client : clients) {
+                try {
+                    client.out.writeObject(object);
+                } catch (IOException ex) {
+                    
+                }
+            }
+        }
+        
+        private void autorisationCheck() throws IOException, ClassNotFoundException{
+            while(true){
+                    ClientData = (ClientData)in.readObject();
+                    if(ClientData.isSignUp()){
+                        clientId = new DBworker().writeToSQLwhenRegister(ClientData);
+                            if(clientId.endsWith("exist") || clientId.equals("noDBconnect")){
+                                if(clientId.equals("noDBconnect")){
+                                    out.writeObject(new Message("Try again later", MessageType.MESSAGE));
+                                    close();
+                                }else{
+                                    out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                                }
+                            }else{
+                                AddUserInTheList(new User(null, clientId,ClientData.getNickName()));
+                                out.writeObject(new Message(clientId,MessageType.AUTHORISATION));
+                                break;
+                            }
+                    }else{
+                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getNickName(), ClientData.getPassword());
+                        if(clientId.equals("invalid") || clientId.equals("noDBconnect")){
+                            if(clientId.equals("noDBconnect")){
+                                out.writeObject(new Message("Try again later", MessageType.MESSAGE));
+                                close();
+                            }else{
+                                out.writeObject(new Message(clientId, MessageType.MESSAGE));
+                            }
+                        }else{
+                            AddUserInTheList(new User(null, clientId,ClientData.getNickName()));
+                            out.writeObject(new Message(clientId, MessageType.AUTHORISATION));
+                            break;
+                        }
+                    }
+                }
+        }
+        
+        private void messageTypeAction(Message message) throws IOException{
+            switch(message.getMessageType()){
+                            case MESSAGE:
+                                System.out.println("clientID "+clientId+": Message: "+ message.getMessage());
+                                message.setId(ClientData.getId());
+                                sendToAllUsers(message);
+                                break;
+                            case WHISPER:
+                                for (Client client : clients) {
+                                    if(client.getID().equals(message.getId())){
+                                        client.out.writeObject(message);
+                                    }
+                                }
+                                break;
+                            case FILEMESSAGE:
+                                System.out.println("FileMessage from client: "+message.getMessage());
+                                message.setId(ClientData.getId());
+                                sendToAllUsers(message);
+                                break;
+                            case AVATAR:
+                                saveAvatar(message.getImg());
+                                break;
+                            case ADDFRIEND:
+                                break;
+                            case DELFRIEND:
+                                break;
+                            case NICKNAME:
+                                break;
+                            case EXIT:
+                                sendToAllUsers(new Message(clientId, MessageType.USEROFFLINE));
+                                close();
+                                break;
+                        }
+        }
+        
+        private String getID(){return clientId;}
     }
     
 }

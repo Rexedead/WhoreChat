@@ -1,7 +1,6 @@
 package sample.Client.Controllers;
 
 import com.sun.javafx.beans.event.AbstractNotifyListener;
-import com.sun.javafx.binding.BidirectionalBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,19 +8,15 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import sample.Client.Client;
-import sample.Client.ListsModels.FriendList;
-import sample.Client.ListsModels.MessageList;
-import sample.Client.ListsModels.UserList;
+import sample.Client.ViewLists.FriendList;
+import sample.Client.ViewLists.MessageList;
+import sample.Client.ViewLists.UserList;
 import sample.Message;
-import sample.User;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,10 +25,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
+import sample.User;
 
 public class Controller {
 
@@ -144,8 +140,10 @@ public class Controller {
         modalWindow = FXMLLoader.load();
         ModalWindowController = FXMLLoader.getController();
         client = new Client(serverAddress, serverPort);
-        msgList.add(new User(new Image("file:D:/projects/WhoreChat/src/sample/resources/12.jpg"),
-        "12", "Hate"), new Message("У меня получилось!!!"));
+//        userList.add(new User(null,
+//        "12", "Hate"));
+//        msgList.add(new User(null,
+//        "12", "Hate"), new Message("У меня получилось!!!"));
         if (client.isConnected()) {
             ModalWindowController.setClient(client);
             isConnected = true;
