@@ -20,11 +20,12 @@ import sample.User;
  */
 public class MessageList {
     private ObservableList<Parent> messages = FXCollections.observableArrayList();
-    MessageListModel MSG = new MessageListModel();
-    FileMessageModel FMSG = new FileMessageModel();
-    ImageMessageModel IMSG = new ImageMessageModel();
+    MessageListModel MSG;
+    FileMessageModel FMSG;
+    ImageMessageModel IMSG;
 
     public void add(User user, Message message) throws IOException{
+        MSG = new MessageListModel();
         MSG.setAvatar(user.getAvatar());
         MSG.setNickName(user.getNickName());
         MSG.setMessage(message.getMessage());
@@ -34,6 +35,7 @@ public class MessageList {
     public void delete(int id){messages.remove(id);}
     
     public void addImageMessage(User user, Message message) throws IOException{
+        IMSG = new ImageMessageModel();
         IMSG.setAvatar(user.getAvatar());
         IMSG.setNickName(user.getNickName());
         IMSG.setMessage(message.getMessage());
@@ -42,6 +44,7 @@ public class MessageList {
     }
     
     public void addFileMessage(User user, Message message) throws IOException{
+        FMSG = new FileMessageModel();
         FMSG.setAvatar(user.getAvatar());
         FMSG.setNickName(user.getNickName());
         FMSG.setMessage(message.getMessage());
