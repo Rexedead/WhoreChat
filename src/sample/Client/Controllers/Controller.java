@@ -1,6 +1,9 @@
 package sample.Client.Controllers;
 
 import com.sun.javafx.beans.event.AbstractNotifyListener;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +15,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import sample.Client.Client;
 import sample.Client.ViewLists.FriendList;
 import sample.Client.ViewLists.MessageList;
 import sample.Client.ViewLists.UserList;
 import sample.Message;
+import sample.User;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,12 +31,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.scene.image.Image;
-import javafx.stage.StageStyle;
-import sample.User;
 
 public class Controller {
 
@@ -189,13 +189,12 @@ public class Controller {
         window.initOwner(node.getScene().getWindow());
         window.showAndWait();
     }
-    
+
     class MessageUpdater extends Thread{
         String myulg;
         String myuid;
         String uid;
         String ulg;
-
 
         @Override
         public void run() {
@@ -203,32 +202,26 @@ public class Controller {
             try {
                 while (true) {
                     try {
-
                         Object q = client.messageUpdater();
 
                         if (q instanceof ArrayList) {
-
-                            for (int i = 0; i < ((ArrayList<User>) q).size(); i++) {
-                                ulg = ((ArrayList<User>) q).get(i).getNickName();
-                                uid = ((ArrayList<User>) q).get(i).getPassword();
-
-                                myulg = ((ArrayList<User>) q).get(((ArrayList) q).size()-1).getNickName();
-                                myuid = ((ArrayList<User>) q).get(((ArrayList) q).size()-1).getId();
-
-                                 userList.add(new User (myulg,myuid));
+                            userList.add((ArrayList<User>) q);
                             }
 
 
-                        } else if (q instanceof Message) {
-                            message = (Message) q;
-                            System.out.println(userList.getUserList().size());
-                            msgList.add(new User(myulg,myuid), message);
+                        else if (q instanceof Message) {
+                                    message = (Message) q;
+                                   System.out.println(((Message) q).getMessageType());
+                                    System.out.println(userList.getUserList().size());
+                                    System.out.println(((Message) q).getMessage());
+                                    String messageID = ((Message) q).getId();
+                                    System.out.println(messageID);
+                                    msgList.add(new User(userList.getUserById(messageID).getNickName(),userList.getUserById(messageID).getId()), message);
+
+
+
                         }
-
-
-
-
-                     }catch (ClassCastException e) {
+                    } catch (ClassCastException e) {
 
                     }
                 }
@@ -237,6 +230,5 @@ public class Controller {
                 interrupt();
             }
         }
-    } 
+    }
 }
-

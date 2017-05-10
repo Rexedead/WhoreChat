@@ -1,13 +1,14 @@
 package sample.Client;
 
 
+import sample.Message;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sample.Message;
 
 public class Client {
 
