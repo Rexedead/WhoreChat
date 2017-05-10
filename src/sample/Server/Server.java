@@ -110,7 +110,7 @@ public class Server{
                                     out.writeObject(new Message(clientId, MessageType.MESSAGE));
                                 }
                             }else{
-                                Users.add(new User(clientId,ClientData.getNickName()));
+                                Users.add(new User(null, clientId,ClientData.getNickName()));
                                 out.writeObject(new Message(MessageType.AUTHORISATION));
                                 break;
                             }
@@ -124,7 +124,7 @@ public class Server{
                                 out.writeObject(new Message(clientId, MessageType.MESSAGE));
                             }
                         }else{
-                            Users.add(new User(clientId,ClientData.getNickName()));
+                            Users.add(new User(null, clientId,ClientData.getNickName()));
                             out.writeObject(new Message(MessageType.AUTHORISATION));
                             break;
                         }

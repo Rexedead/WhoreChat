@@ -18,14 +18,13 @@ import sample.User;
  * @author Hate
  */
 public class UserList {
-    private ObservableList<HBox> users = FXCollections.observableArrayList();
-    
+    private ObservableList<UserListModel> users = FXCollections.observableArrayList();
+    UserListModel ULM;
     public void add(User user){
-        ImageView avatar = new ImageView(user.getAvatar());
-        Label nickName = new Label(user.getNickName());
-        Label id = new Label(user.getId());
-        id.setVisible(false);
-        users.add(new HBox(avatar, nickName, id));
+        ULM = new UserListModel(user.getId());
+        ULM.setAvatar(user.getAvatar());
+        ULM.setNickName(user.getNickName());
+        users.add(ULM);
     }
     
     public void delete(int id){users.remove(id);}
@@ -38,8 +37,7 @@ public class UserList {
     }
     
     public String getUserId(int id){
-        Label label = (Label)users.get(id).getChildren().get(2);
-        return label.getText();
+        return users.get(id).getUserId();
     }
     
     public ObservableList getUserList(){return users;}
