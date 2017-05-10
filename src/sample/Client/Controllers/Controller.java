@@ -1,6 +1,9 @@
 package sample.Client.Controllers;
 
 import com.sun.javafx.beans.event.AbstractNotifyListener;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +15,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import sample.Client.Client;
 import sample.Client.ViewLists.FriendList;
 import sample.Client.ViewLists.MessageList;
 import sample.Client.ViewLists.UserList;
 import sample.Message;
+import sample.User;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,12 +31,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.scene.image.Image;
-import javafx.stage.StageStyle;
-import sample.User;
 
 public class Controller {
 
