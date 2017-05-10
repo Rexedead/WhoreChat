@@ -142,7 +142,7 @@ public class Server{
                     try {
                         switch(message.getMessageType()){
                             case MESSAGE:
-                                System.out.println("Message from client: "+message.getMessage());
+                                System.out.println("clientID "+clientId+": Message: "+ message.getMessage());
                                 message.setId(ClientData.getId());
                                 for (Client client : clients) {
                                     client.out.writeObject(message); //Отправляем полученное сообщение всем клиентам на сервере

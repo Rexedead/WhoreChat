@@ -1,7 +1,9 @@
 package sample.Client.Controllers;
 
 import com.sun.javafx.beans.event.AbstractNotifyListener;
-import com.sun.javafx.binding.BidirectionalBinding;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.stage.StageStyle;
 import sample.Client.Client;
 import sample.Client.ListsModels.FriendList;
 import sample.Client.ListsModels.MessageList;
@@ -26,14 +28,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.stage.StageStyle;
 
 public class Controller {
 
@@ -43,16 +41,16 @@ public class Controller {
     private boolean isConnected = false;
     Client client;
     Message message;
-    
+
     private UserList userList = new UserList();
     private MessageList msgList = new MessageList();
     private FriendList FrndList = new FriendList();
-    
+
     private StringProperty connection = new SimpleStringProperty();
 
     @FXML
     private AnchorPane root;
-    
+
     @FXML
     private ListView MessageList;
 
@@ -79,12 +77,12 @@ public class Controller {
 
     @FXML
     private CheckBox CWSOptionButton;
-    
+
     private Parent modalWindow;
     private Stage window;
     private FXMLLoader FXMLLoader = new FXMLLoader();
     private ModalWindowController ModalWindowController;
-    
+
     @FXML
     public void initialize() throws IOException{
         connection.set("Connect");
@@ -95,11 +93,11 @@ public class Controller {
                 ConnectButton.setText(connection.getValue());
             }
         });
-        
+
         OnlineList.setItems(userList.getUserList());
         MessageList.setItems(msgList.getMessageList());
         FriendList.setItems(FrndList.getUserList());
-        
+
         Properties properties = new Properties();
         String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
@@ -124,8 +122,8 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-        
-        ConnectButton.setOnAction((ActionEvent event) -> {           
+
+        ConnectButton.setOnAction((ActionEvent event) -> {
             try {
                 if(ConnectButton.getText().equals("Disconnect")){
                     client.disconnect();
@@ -138,7 +136,7 @@ public class Controller {
             }
         });
     }
-    
+
     private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
@@ -171,15 +169,15 @@ public class Controller {
             MessageList.getItems().add(new HBox(new Label("You are not online")));
         }
     }
-    
-    public void sendSystemMessage(Object object) throws IOException{           
-        client.sendSystemMessage(object);        
+
+    public void sendSystemMessage(Object object) throws IOException{
+        client.sendSystemMessage(object);
     }
 
     public void autoFillServerIPPort() {
         this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
     }
-    
+
     public void showLogInSignUpWindow(Node node) throws IOException{
         window = new Stage();
         window.setTitle("Log In");
@@ -190,16 +188,46 @@ public class Controller {
         window.initOwner(node.getScene().getWindow());
         window.showAndWait();
     }
-    
+
     class MessageUpdater extends Thread{
+        String myulg;
+        String myuid;
+        String uid;
+        String ulg;
+
+
         @Override
         public void run() {
 
             try {
                 while (true) {
                     try {
-                        message = (Message) client.messageUpdater();
-                    } catch (ClassCastException e) {
+
+                        Object q = client.messageUpdater();
+
+                        if (q instanceof ArrayList) {
+
+                            for (int i = 0; i < ((ArrayList<User>) q).size(); i++) {
+                                ulg = ((ArrayList<User>) q).get(i).getNickName();
+                                uid = ((ArrayList<User>) q).get(i).getPassword();
+
+                                myulg = ((ArrayList<User>) q).get(((ArrayList) q).size()-1).getNickName();
+                                myuid = ((ArrayList<User>) q).get(((ArrayList) q).size()-1).getId();
+
+                                 userList.add(new User (myulg,myuid));
+                            }
+
+
+                        } else if (q instanceof Message) {
+                            message = (Message) q;
+                            System.out.println(userList.getUserList().size());
+                            msgList.add(new User(myulg,myuid), message);
+                        }
+
+
+
+
+                     }catch (ClassCastException e) {
 
                     }
                 }
@@ -208,6 +236,5 @@ public class Controller {
                 interrupt();
             }
         }
-    } 
+    }
 }
-
