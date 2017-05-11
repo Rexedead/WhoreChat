@@ -227,7 +227,6 @@ public class Controller {
                                 break;
                             case USEROFFLINE:
                                 message = (Message) q;
-                                System.out.println(message.getId());
                                 userList.delete(userList.getIndexByMessageId(message.getId()));
                                 break;
                         }
