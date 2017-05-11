@@ -61,4 +61,12 @@ public class UserList {
     public ObservableList getUserList() {
         return users;
     }
+
+    public int getIndexByMessageId(String messageId){
+        for (UserListModel user : users) {
+            if (user.getUserId().equalsIgnoreCase(messageId)) {
+                return users.indexOf(user);
+            }
+        }return -1;
+    }
 }

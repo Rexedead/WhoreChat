@@ -226,7 +226,9 @@ public class Controller {
                             case USERONLINE:
                                 break;
                             case USEROFFLINE:
-                                userList.delete(userList.getUserList().indexOf(message.getId()));
+                                message = (Message) q;
+                                System.out.println(message.getId());
+                                userList.delete(userList.getIndexByMessageId(message.getId()));
                                 break;
                         }
                     }else if (q instanceof User){
@@ -236,9 +238,9 @@ public class Controller {
                 } catch (ClassCastException e) {
 
                 } catch (IOException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+
                 }
             }
         }
