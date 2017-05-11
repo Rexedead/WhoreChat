@@ -73,6 +73,7 @@ public class ModalWindowController{
             public void handle(ActionEvent event) {
                 try {
                 if(!LoginField.getText().isEmpty() && !PasswordField.getText().isEmpty()){
+                    LoginButton.setDisable(true);
                     client.sendSystemMessage(new ClientData(
                     LoginField.getText(), 
                     PasswordField.getText()));
@@ -92,6 +93,7 @@ public class ModalWindowController{
                 try {
                     if(!RegPasswordField.getText().isEmpty() && !RegEMailField.getText().isEmpty()
                             && !RegNickNameField.getText().isEmpty()){
+                        RegButton.setDisable(true);
                         client.sendSystemMessage(new ClientData(
                         RegPasswordField.getText(), 
                         RegEMailField.getText(), 
@@ -136,6 +138,8 @@ public class ModalWindowController{
                         statusLabel.setText("Try again later");
                         regStatusLabel.setText("Try again later");
                 }
+                LoginButton.setDisable(false);
+                RegButton.setDisable(false);
             }
         } catch (IOException | ClassNotFoundException ex) {
             

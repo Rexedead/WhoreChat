@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Client {
 
@@ -37,14 +35,14 @@ public class Client {
             out = new ObjectOutputStream(connection.getOutputStream()); //поток отправки сообщения
             isConnected = true;
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Не удалось подключиться к серверу");
         }
     }
     public void disconnect(){
         try{
             isConnected = false;
             sendMessage(new Message());
-            connection.close();
+            connection = null;
             in.close();
             out.close();
         }catch(NullPointerException | IOException e){

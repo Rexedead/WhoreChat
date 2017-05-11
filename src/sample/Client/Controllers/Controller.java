@@ -29,10 +29,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.concurrent.WorkerStateEvent;
 
 public class Controller {
 
@@ -40,8 +42,9 @@ public class Controller {
     private String serverAddress;
     private int serverPort;
     private boolean isConnected = false;
-    Client client;
+    Client client = new Client();
     Message message;
+    Thread messageUpdater;
 
     private UserList userList = new UserList();
     private MessageList msgList = new MessageList();
@@ -86,6 +89,7 @@ public class Controller {
 
     @FXML
     public void initialize() throws IOException {
+        messageUpdater = new Thread();
         connection.set("Connect");
         connection.addListener(new AbstractNotifyListener() {
 
@@ -142,35 +146,41 @@ public class Controller {
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
         ModalWindowController = FXMLLoader.getController();
-        client = new Client(serverAddress, serverPort);
+        client.connect(serverAddress, serverPort);
         if (client.isConnected()) {
             ModalWindowController.setClient(client);
             isConnected = true;
-            connection.set("Disconnect");
+            ConnectButton.setDisable(true);
             showLogInSignUpWindow(root);
             if (client.isConnected()) {
-                Thread messageUpdater = new Thread(task);
-                task.setOnFailed(event ->{
-                    connection.set("Connect");
+                Task<Void> task = newTaskForMessage();
+                connection.set("Disconnect");
+                messageUpdater = new Thread(task);
+                task.setOnSucceeded((WorkerStateEvent event) -> {
                     messageUpdater.interrupt();
+                    connection.set("Connect");
+                    client.disconnect();
                     userList.clear();
                 });
+                messageUpdater.setDaemon(true);
                 messageUpdater.start();
-
             } else {
+                ConnectButton.setDisable(false);
                 connection.setValue("Connect");
             }
         }
+        ConnectButton.setDisable(false);
         FXMLLoader = new FXMLLoader();
     }
 
     public void sendMessage() throws IOException {
-        if (client != null) {
+        if (client.isConnected()) {
             if (!(SendTextArea.getText().equals(""))) {
                 client.sendMessage(
                         new Message(SendTextArea.getText()));  //Метод отправки сообщения
             }
             SendTextArea.clear();
+            
         } else {
             MessageList.getItems().add(new HBox(new Label("You are not online")));
         }
@@ -194,67 +204,75 @@ public class Controller {
         window.initOwner(node.getScene().getWindow());
         window.showAndWait();
     }
+    private Task newTaskForMessage(){
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
 
-    Task<Void> task = new Task<Void>() {
-        @Override
-        protected Void call() throws Exception {
+                while (true) {
+                    try{
 
-            while (true) {
+                    Object q = client.messageUpdater();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
 
-                Object q = client.messageUpdater();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (q instanceof ArrayList) {
-                            userList.add((ArrayList<User>) q);
-//                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
+                            if (q instanceof ArrayList) {
+                                userList.add((ArrayList<User>) q);
+    //                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
+                            }
+                            if (q instanceof Message) {
+                                switch (((Message) q).getMessageType()) {
+
+                                    case MESSAGE:
+                                        message = (Message) q;
+                                        try {
+                                            msgList.add(userList.getUserById(message.getId()), message);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        break;
+
+                                    case WHISPER:
+                                        break;
+                                    case FILEMESSAGE:
+                                        break;
+                                    case ADDFRIEND:
+                                        break;
+                                    case DELFRIEND:
+                                        break;
+                                    case USEROFFLINE:
+                                        message = (Message) q;
+                                        try {
+                                            msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        userList.delete(userList.getIndexByMessageId(message.getId()));
+
+                                        break;
+                                }
+
+                            } else if (q instanceof User) {
+                                userList.add((User) q);
+                                try {
+                                    msgList.add((User) q, new Message(" is now Online"));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }                  
                         }
-                        if (q instanceof Message) {
-                            switch (((Message) q).getMessageType()) {
-
-                                case MESSAGE:
-                                    message = (Message) q;
-                                    try {
-                                        msgList.add(userList.getUserById(message.getId()), message);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-
-                                case WHISPER:
-                                    break;
-                                case FILEMESSAGE:
-                                    break;
-                                case ADDFRIEND:
-                                    break;
-                                case DELFRIEND:
-                                    break;
-                                case USEROFFLINE:
-                                    message = (Message) q;
-                                    try {
-                                        msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    userList.delete(userList.getIndexByMessageId(message.getId()));
-
-                                    break;
-                            }
-
-                        } else if (q instanceof User) {
-                            userList.add((User) q);
-                            try {
-                                msgList.add((User) q, new Message(" is now Online"));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }                  
-                    }
-                });
+                    });
+                }catch(SocketException e){
+                    break;
+                }
             }
+            return null;
         }
 
     };
+    return task;
+    }
 
 
 }

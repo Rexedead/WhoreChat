@@ -138,6 +138,8 @@ public class Server{
         }
         
         private void close() throws IOException{            //Метод для закрытия потоков чтения и записи клиента
+            clients.remove(this);
+            sendToAllUsers(new Message(clientId, MessageType.USEROFFLINE));
             in.close();
             for(int i = 0; i < Users.size(); i++){
                 if(Users.get(i).getId() == clientId){
@@ -247,7 +249,6 @@ public class Server{
                             case NICKNAME:
                                 break;
                             case EXIT:
-                                sendToAllUsers(new Message(clientId, MessageType.USEROFFLINE));
                                 close();
                                 break;
                         }
