@@ -211,27 +211,22 @@ public class Controller {
 
                             case WHISPER:
                                 break;
-                            case EXIT:
-                                break;
-                            case AVATAR:
-                                break;
-                            case NICKNAME:
-                                break;
                             case FILEMESSAGE:
                                 break;
                             case ADDFRIEND:
                                 break;
                             case DELFRIEND:
                                 break;
-                            case USERONLINE:
-                                break;
                             case USEROFFLINE:
                                 message = (Message) q;
+                                msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
                                 userList.delete(userList.getIndexByMessageId(message.getId()));
+
                                 break;
                         }
                     }else if (q instanceof User){
                         userList.add((User)q);
+                        msgList.add((User)q, new Message(" is now Online"));
                     }
 
                 } catch (ClassCastException e) {
