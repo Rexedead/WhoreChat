@@ -149,7 +149,7 @@ public class Controller {
             connection.set("Disconnect");
             showLogInSignUpWindow(root);
             if (client.isConnected()) {
-
+                task.setOnCancelled(event ->{connection.set("Connect");});
                 new Thread(task).start();
 
 
@@ -196,16 +196,16 @@ public class Controller {
         protected Void call() throws Exception {
 
             while (true) {
-                try {
 
-                    Object q = client.messageUpdater();
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
 
+                Object q = client.messageUpdater();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
                             if (q instanceof ArrayList) {
                                 userList.add((ArrayList<User>) q);
-                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
+//                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
                             }
 
 
@@ -249,24 +249,21 @@ public class Controller {
                                     e.printStackTrace();
                                 }
                             }
-                        }
-                    });
+                        }catch (ClassCastException e) {
+                            connection.set("Connect");
+                            Thread.currentThread().isInterrupted();
+                            task.cancel();
+                    }
 
-                } catch (ClassCastException | IOException | ClassNotFoundException e) {
-                    connection.set("Connect");
                 }
-                //Block the thread for a short time, but be sure
-                //to check the InterruptedException for cancellation
-                
-
-                //Block the thread for a short time, but be sure
-                //to check the InterruptedException for cancellation
-            }
+            });
 
         }
 
+    }
 
-    };
+
+};
 
 
 }
