@@ -252,13 +252,12 @@ public class Controller {
                         }
                     });
 
-                } catch (ClassCastException e) {
-
-                } catch (IOException ex) {
-
-                } catch (ClassNotFoundException ex) {
-
+                } catch (ClassCastException | IOException | ClassNotFoundException e) {
+                    connection.set("Connect");
                 }
+                //Block the thread for a short time, but be sure
+                //to check the InterruptedException for cancellation
+                
 
                 //Block the thread for a short time, but be sure
                 //to check the InterruptedException for cancellation

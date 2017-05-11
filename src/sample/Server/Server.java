@@ -104,7 +104,7 @@ public class Server{
             try {
                 autorisationCheck();
                 out.writeObject(Users);
-                sendToAllUsers(new User(ClientData.getAvatar(), clientId, ClientData.getNickName()));
+                sendMeToOthersClients(new User(ClientData.getAvatar(), clientId, ClientData.getNickName()));
                 ClientData = null;
             } catch (IOException | ClassNotFoundException | ClassCastException ex) {
                 try {
@@ -164,6 +164,18 @@ public class Server{
                     client.out.writeObject(object);
                 } catch (IOException ex) {
                     
+                }
+            }
+        }
+        
+        private void sendMeToOthersClients(User user){
+            for (Client client : clients) {
+                if(client != this){
+                    try {
+                        client.out.writeObject(user);
+                    } catch (IOException ex) {
+
+                    }
                 }
             }
         }
