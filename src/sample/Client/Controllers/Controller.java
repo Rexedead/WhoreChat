@@ -1,9 +1,11 @@
 package sample.Client.Controllers;
 
 import com.sun.javafx.beans.event.AbstractNotifyListener;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,7 +51,7 @@ public class Controller {
 
     @FXML
     private AnchorPane root;
-    
+
     @FXML
     private ListView MessageList;
 
@@ -76,14 +78,14 @@ public class Controller {
 
     @FXML
     private CheckBox CWSOptionButton;
-    
+
     private Parent modalWindow;
     private Stage window;
     private FXMLLoader FXMLLoader = new FXMLLoader();
     private ModalWindowController ModalWindowController;
-    
+
     @FXML
-    public void initialize() throws IOException{
+    public void initialize() throws IOException {
         connection.set("Connect");
         connection.addListener(new AbstractNotifyListener() {
 
@@ -92,11 +94,11 @@ public class Controller {
                 ConnectButton.setText(connection.getValue());
             }
         });
-        
+
         OnlineList.setItems(userList.getUserList());
         MessageList.setItems(msgList.getMessageList());
         FriendList.setItems(FrndList.getUserList());
-        
+
         Properties properties = new Properties();
         String propFilename = "sample/resources/config.properties";
         inputStream = this.getClass().getClassLoader().getResourceAsStream(propFilename);
@@ -121,22 +123,22 @@ public class Controller {
                 MessageList.getItems().add("Не удалось создать файл конфигурации");
             }
         }
-        
-        ConnectButton.setOnAction((ActionEvent event) -> {           
+
+        ConnectButton.setOnAction((ActionEvent event) -> {
             try {
-                if(ConnectButton.getText().equals("Disconnect")){
+                if (ConnectButton.getText().equals("Disconnect")) {
                     client.disconnect();
-                }else{
+                } else {
                     connect(SocketInputArea.getText().split(":")[0],
-                    Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+                            Integer.parseInt(SocketInputArea.getText().split(":")[1]));
                 }
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
-    
-    private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException{
+
+    private void connect(String serverAddress, int serverPort) throws IOException, InterruptedException {
         FXMLLoader.setLocation(getClass().getResource("/sample/Client/FXML/reglogin.fxml"));
         modalWindow = FXMLLoader.load();
         ModalWindowController = FXMLLoader.getController();
@@ -146,9 +148,12 @@ public class Controller {
             isConnected = true;
             connection.set("Disconnect");
             showLogInSignUpWindow(root);
-            if (client.isConnected()){
-                new MessageUpdater().start();
-            }else{
+            if (client.isConnected()) {
+
+                new Thread(task).start();
+
+
+            } else {
                 connection.setValue("Connect");
             }
         }
@@ -166,16 +171,16 @@ public class Controller {
             MessageList.getItems().add(new HBox(new Label("You are not online")));
         }
     }
-    
-    public void sendSystemMessage(Object object) throws IOException{           
-        client.sendSystemMessage(object);        
+
+    public void sendSystemMessage(Object object) throws IOException {
+        client.sendSystemMessage(object);
     }
 
     public void autoFillServerIPPort() {
         this.SocketInputArea.setText(this.serverAddress + ":" + this.serverPort);  //Заполняем сервер:порт из properties
     }
-    
-    public void showLogInSignUpWindow(Node node) throws IOException{
+
+    public void showLogInSignUpWindow(Node node) throws IOException {
         window = new Stage();
         window.setTitle("Log In");
         window.setResizable(false);
@@ -186,48 +191,66 @@ public class Controller {
         window.showAndWait();
     }
 
-    class MessageUpdater extends Thread{
-
-
+    Task<Void> task = new Task<Void>() {
         @Override
-        public void run(){
+        protected Void call() throws Exception {
+
             while (true) {
                 try {
+
                     Object q = client.messageUpdater();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    if (q instanceof ArrayList) {
-                        userList.add((ArrayList<User>) q);
-                        userList.delete(userList.getUserList().size()-1);  //удаляем себя из общего массива, тк добавляемся через obj User
-                    }
+                            if (q instanceof ArrayList) {
+                                userList.add((ArrayList<User>) q);
+                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
+                            }
 
 
-                     if (q instanceof Message) {
-                        switch (((Message) q).getMessageType()){
+                            if (q instanceof Message) {
+                                switch (((Message) q).getMessageType()) {
 
-                            case MESSAGE:
-                                message = (Message) q;
-                                msgList.add(userList.getUserById(message.getId()), message);
-                                break;
+                                    case MESSAGE:
+                                        message = (Message) q;
+                                        try {
+                                            msgList.add(userList.getUserById(message.getId()), message);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        break;
 
-                            case WHISPER:
-                                break;
-                            case FILEMESSAGE:
-                                break;
-                            case ADDFRIEND:
-                                break;
-                            case DELFRIEND:
-                                break;
-                            case USEROFFLINE:
-                                message = (Message) q;
-                                msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
-                                userList.delete(userList.getIndexByMessageId(message.getId()));
+                                    case WHISPER:
+                                        break;
+                                    case FILEMESSAGE:
+                                        break;
+                                    case ADDFRIEND:
+                                        break;
+                                    case DELFRIEND:
+                                        break;
+                                    case USEROFFLINE:
+                                        message = (Message) q;
+                                        try {
+                                            msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        userList.delete(userList.getIndexByMessageId(message.getId()));
 
-                                break;
+                                        break;
+                                }
+
+                            } else if (q instanceof User) {
+                                userList.add((User) q);
+                                try {
+                                    msgList.add((User) q, new Message(" is now Online"));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
-                    }else if (q instanceof User){
-                        userList.add((User)q);
-                        msgList.add((User)q, new Message(" is now Online"));
-                    }
+                    });
 
                 } catch (ClassCastException e) {
 
@@ -236,7 +259,16 @@ public class Controller {
                 } catch (ClassNotFoundException ex) {
 
                 }
+
+                //Block the thread for a short time, but be sure
+                //to check the InterruptedException for cancellation
             }
+
         }
-    }
+
+
+    };
+
+
 }
+
