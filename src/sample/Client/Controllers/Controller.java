@@ -149,9 +149,13 @@ public class Controller {
             connection.set("Disconnect");
             showLogInSignUpWindow(root);
             if (client.isConnected()) {
-
-                new Thread(task).start();
-
+                Thread messageUpdater = new Thread(task);
+                task.setOnFailed(event ->{
+                    connection.set("Connect");
+                    messageUpdater.interrupt();
+                    userList.clear();
+                });
+                messageUpdater.start();
 
             } else {
                 connection.setValue("Connect");
@@ -196,76 +200,59 @@ public class Controller {
         protected Void call() throws Exception {
 
             while (true) {
-                try {
 
-                    Object q = client.messageUpdater();
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            if (q instanceof ArrayList) {
-                                userList.add((ArrayList<User>) q);
-                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
-                            }
-
-
-                            if (q instanceof Message) {
-                                switch (((Message) q).getMessageType()) {
-
-                                    case MESSAGE:
-                                        message = (Message) q;
-                                        try {
-                                            msgList.add(userList.getUserById(message.getId()), message);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                        break;
-
-                                    case WHISPER:
-                                        break;
-                                    case FILEMESSAGE:
-                                        break;
-                                    case ADDFRIEND:
-                                        break;
-                                    case DELFRIEND:
-                                        break;
-                                    case USEROFFLINE:
-                                        message = (Message) q;
-                                        try {
-                                            msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                        userList.delete(userList.getIndexByMessageId(message.getId()));
-
-                                        break;
-                                }
-
-                            } else if (q instanceof User) {
-                                userList.add((User) q);
-                                try {
-                                    msgList.add((User) q, new Message(" is now Online"));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                Object q = client.messageUpdater();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (q instanceof ArrayList) {
+                            userList.add((ArrayList<User>) q);
+//                                userList.delete(userList.getUserList().size() - 1);  //удаляем себя из общего массива, тк добавляемся через obj User
                         }
-                    });
+                        if (q instanceof Message) {
+                            switch (((Message) q).getMessageType()) {
 
-                } catch (ClassCastException e) {
+                                case MESSAGE:
+                                    message = (Message) q;
+                                    try {
+                                        msgList.add(userList.getUserById(message.getId()), message);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
 
-                } catch (IOException ex) {
+                                case WHISPER:
+                                    break;
+                                case FILEMESSAGE:
+                                    break;
+                                case ADDFRIEND:
+                                    break;
+                                case DELFRIEND:
+                                    break;
+                                case USEROFFLINE:
+                                    message = (Message) q;
+                                    try {
+                                        msgList.add(userList.getUserById(message.getId()), new Message(" has left the conversation"));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    userList.delete(userList.getIndexByMessageId(message.getId()));
 
-                } catch (ClassNotFoundException ex) {
+                                    break;
+                            }
 
-                }
-
-                //Block the thread for a short time, but be sure
-                //to check the InterruptedException for cancellation
+                        } else if (q instanceof User) {
+                            userList.add((User) q);
+                            try {
+                                msgList.add((User) q, new Message(" is now Online"));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }                  
+                    }
+                });
             }
-
         }
-
 
     };
 

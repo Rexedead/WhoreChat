@@ -64,7 +64,7 @@ public class Server{
                 Socket serverUser = server.accept();        //Сервер ждёт клиента
                 System.out.println("Client connected" + serverUser.toString());
                 Client client = new Client(serverUser);
-                clients.add(client);                        //Подключившийся клиент добавляется в массив клиентов
+                //clients.add(client);                        //Подключившийся клиент добавляется в массив клиентов
                 client.start();
             } catch (IOException ex) {
                 System.out.println
@@ -194,6 +194,7 @@ public class Server{
                                 }
                             }else{
                                 AddUserInTheList(new User(null, clientId,ClientData.getNickName()));
+                                clients.add(this);
                                 out.writeObject(new Message(clientId,MessageType.AUTHORISATION));
                                 break;
                             }
@@ -208,6 +209,7 @@ public class Server{
                             }
                         }else{
                             AddUserInTheList(new User(null, clientId,ClientData.getNickName()));
+                            clients.add(this);
                             out.writeObject(new Message(clientId, MessageType.AUTHORISATION));
                             break;
                         }
