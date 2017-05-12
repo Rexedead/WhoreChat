@@ -6,6 +6,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,9 +33,6 @@ import java.io.PrintWriter;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.concurrent.WorkerStateEvent;
 
 public class Controller {
 
@@ -80,7 +78,9 @@ public class Controller {
     private Button ConnectButton;
 
     @FXML
-    private CheckBox CWSOptionButton;
+    private Label RegCheck;
+
+
 
     private Parent modalWindow;
     private Stage window;
@@ -133,11 +133,20 @@ public class Controller {
                 if (ConnectButton.getText().equals("Disconnect")) {
                     client.disconnect();
                 } else {
-                    connect(SocketInputArea.getText().split(":")[0],
-                            Integer.parseInt(SocketInputArea.getText().split(":")[1]));
+
+                    String regip = SocketInputArea.getText().split(":")[0];
+                    String regport = SocketInputArea.getText().split(":")[1];
+
+                    boolean bip = regip.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+                    boolean bpo = regport.matches("^0*(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$");
+                    if (bip&&bpo){
+                        connect(regip,Integer.parseInt(regport));
+                    }else {
+                        RegCheck.setText("Wrong address or port\nor you are an idiot\nfill with: ip.ip.ip.ip:port");
+                    }
                 }
-            } catch (IOException | InterruptedException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException | InterruptedException |ArrayIndexOutOfBoundsException ex) {
+                RegCheck.setText("Wrong address or port");
             }
         });
     }
