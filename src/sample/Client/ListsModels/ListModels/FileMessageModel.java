@@ -6,6 +6,7 @@
 package sample.Client.ListsModels.ListModels;
 
 import java.io.File;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -17,7 +18,8 @@ public class FileMessageModel extends MessageListModel{
     private ImageView MSGData = new ImageView();
     private File DATA;
     
-    public FileMessageModel(){
+    public FileMessageModel(ImageView Avatar, Label nickName, String MSG){
+        super(Avatar, nickName, MSG);
         MSGData.setFitHeight(20);
         MSGData.setFitWidth(20);
         getChildren().add(MSGData);

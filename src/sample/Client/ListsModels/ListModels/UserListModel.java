@@ -15,30 +15,42 @@ import javafx.scene.layout.HBox;
  * @author Hate
  */
 public class UserListModel extends HBox{
-    private ImageView Avatar = new ImageView();
-    private Label NickName = new Label();
+    private ImageView Avatar;
+    private Label NickName;
     private String UserId;
     
     
-    public UserListModel(String UserId){
+    public UserListModel(String UserId, ImageView Avatar, Label NickName){
         this.UserId = UserId;
-        Avatar.setFitHeight(30);
-        Avatar.setFitWidth(30);
-        NickName.setMinWidth(30);
-        getChildren().addAll(Avatar, NickName);
+        this.Avatar.setFitHeight(30);
+        this.Avatar.setFitWidth(30);
+        this.NickName.setMinWidth(30);
+        getChildren().addAll(this.Avatar, this.NickName);
     }
     
-    public void setAvatar(Image Avatar){
+    public void setAvatarImage(Image Avatar){
         this.Avatar.setImage(Avatar);
     }
     
-    public void setNickName(String NickName){
+    public void setAvatar(ImageView Avatar){
+        this.Avatar = Avatar;
+    }
+    
+    public void setNickNameString(String NickName){
         this.NickName.setText(NickName);
     }
     
-    public String getNickName(){return NickName.getText();}
+    public void setNickName(Label nickName){
+        this.NickName = nickName;
+    }
     
-    public Image getAvatar(){return Avatar.getImage();}
+    public String getNickNameString(){return NickName.getText();}
+    
+    public Label getNickName(){return this.NickName;}
+    
+    public Image getAvatarImage(){return Avatar.getImage();}
+    
+    public ImageView getAvatar(){return this.Avatar;}
     
     public void setUserId(String UserId){
         this.UserId = UserId;

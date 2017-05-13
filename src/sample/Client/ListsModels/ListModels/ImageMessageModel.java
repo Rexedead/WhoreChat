@@ -5,6 +5,7 @@
  */
 package sample.Client.ListsModels.ListModels;
 
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -15,7 +16,8 @@ import javafx.scene.image.ImageView;
 public class ImageMessageModel extends MessageListModel{
     private ImageView image = new ImageView();
     
-    public ImageMessageModel(){
+    public ImageMessageModel(ImageView Avatar, Label nickName, String MSG){
+        super(Avatar, nickName, MSG);
         image.setFitHeight(40);
         image.setFitWidth(40);
         getChildren().add(image);

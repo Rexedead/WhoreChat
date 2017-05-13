@@ -24,7 +24,6 @@ import sample.Client.ViewLists.MessageList;
 import sample.Client.ViewLists.UserList;
 import sample.Message;
 import sample.User;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +34,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.scene.image.Image;
 
 public class Controller {
 
@@ -157,7 +157,6 @@ public class Controller {
                 connection.set("Disconnect");
                 messageUpdater = new Thread(task);
                 task.setOnSucceeded((WorkerStateEvent event) -> {
-                    messageUpdater.interrupt();
                     connection.set("Connect");
                     client.disconnect();
                     userList.clear();

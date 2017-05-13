@@ -28,29 +28,26 @@ public class MessageList {
     ImageMessageModel IMSG;
 
     public void add(User user, Message message) throws IOException{
-        MSG = new MessageListModel();
-        MSG.setAvatar(user.getAvatar());
-        MSG.setNickName(user.getNickName());
-        MSG.setMessage(message.getMessage());
+        MSG = new MessageListModel(user.getAvatar(), 
+                user.getNickName(), 
+                message.getMessage());
         messages.add(MSG);
     }
     
     public void delete(int id){messages.remove(id);}
     
     public void addImageMessage(User user, Message message) throws IOException{
-        IMSG = new ImageMessageModel();
-        IMSG.setAvatar(user.getAvatar());
-        IMSG.setNickName(user.getNickName());
-        IMSG.setMessage(message.getMessage());
+        IMSG = new ImageMessageModel(user.getAvatar(), 
+                user.getNickName(), 
+                message.getMessage());
         IMSG.setImage(message.getImg());
         messages.add(IMSG);
     }
     
     public void addFileMessage(User user, Message message) throws IOException{
-        FMSG = new FileMessageModel();
-        FMSG.setAvatar(user.getAvatar());
-        FMSG.setNickName(user.getNickName());
-        FMSG.setMessage(message.getMessage());
+        FMSG = new FileMessageModel(user.getAvatar(), 
+                user.getNickName(), 
+                message.getMessage());
         FMSG.setDATA(message.getFile());
         messages.add(FMSG);
     }

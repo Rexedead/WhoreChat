@@ -104,7 +104,7 @@ public class Server{
             try {
                 autorisationCheck();
                 out.writeObject(Users);
-                sendMeToOthersClients(new User(ClientData.getAvatar(), clientId, ClientData.getNickName()));
+                sendMeToOthersClients(new User(ClientData.getAvatarImage(), clientId, ClientData.getNickNameString()));
                 ClientData = null;
             } catch (IOException | ClassNotFoundException | ClassCastException ex) {
                 try {
@@ -195,13 +195,13 @@ public class Server{
                                     out.writeObject(new Message(clientId, MessageType.MESSAGE));
                                 }
                             }else{
-                                AddUserInTheList(new User(null, clientId,ClientData.getNickName()));
+                                AddUserInTheList(new User(null, clientId,ClientData.getNickNameString()));
                                 clients.add(this);
                                 out.writeObject(new Message(clientId,MessageType.AUTHORISATION));
                                 break;
                             }
                     }else{
-                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getNickName(), ClientData.getPassword());
+                        clientId = new DBworker().readFromSQLwhenLogining(ClientData.getNickNameString(), ClientData.getPassword());
                         if(clientId.equals("invalid") || clientId.equals("noDBconnect")){
                             if(clientId.equals("noDBconnect")){
                                 out.writeObject(new Message("Try again later", MessageType.MESSAGE));
@@ -210,7 +210,7 @@ public class Server{
                                 out.writeObject(new Message(clientId, MessageType.MESSAGE));
                             }
                         }else{
-                            AddUserInTheList(new User(null, clientId,ClientData.getNickName()));
+                            AddUserInTheList(new User(null, clientId,ClientData.getNickNameString()));
                             clients.add(this);
                             out.writeObject(new Message(clientId, MessageType.AUTHORISATION));
                             break;

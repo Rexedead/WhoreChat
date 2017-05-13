@@ -47,7 +47,7 @@ public class DBworker {
 
     public String writeToSQLwhenRegister(ClientData clientDataRegistrationStrings) {
 
-        String regNickame = clientDataRegistrationStrings.getNickName();
+        String regNickame = clientDataRegistrationStrings.getNickNameString();
         String regMail = clientDataRegistrationStrings.getMail();
         String regPassword = clientDataRegistrationStrings.getPassword();
         if (statement != null) {
@@ -56,7 +56,7 @@ public class DBworker {
                     statement.execute("insert into users (nickname, password, email ) values" +
                             " ('" + regNickame + "','" + regPassword + "','" + regMail + "')");
                     resultSet = statement.executeQuery("select id from users where " +
-                            "(nickname = '" + clientDataRegistrationStrings.getNickName() + "' " +
+                            "(nickname = '" + clientDataRegistrationStrings.getNickNameString() + "' " +
                             "and password = '" + clientDataRegistrationStrings.getPassword() + "')");
                     while (resultSet.next()) {
                         idReturnForNewUser = resultSet.getString("id");

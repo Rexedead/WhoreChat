@@ -13,15 +13,11 @@
    <children>
       <AnchorPane prefHeight="343.0" prefWidth="400.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
          <children>
-            <TabPane fx:id="ChatWindows" snapToPixel="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TabPane fx:id="ChatWindows" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <tabs>
                   <Tab fx:id="MainTab" closable="false" text="Main">
                      <content>
-                        <AnchorPane>
-                           <children>
-                              <ListView fx:id="MessageList" focusTraversable="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
+                        <ListView fx:id="MessageList" cache="true" focusTraversable="false" prefHeight="370.0" prefWidth="400.0" />
                      </content>
                   </Tab>
                </tabs>
@@ -64,7 +60,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="200.0">
                            <children>
-                              <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" onAction="#autoFillServerIPPort" />
+                              <TextField fx:id="SocketInputArea" layoutX="23.0" layoutY="13.0" />
                               <Button fx:id="ConnectButton" layoutX="66.0" layoutY="49.0" mnemonicParsing="false" text="Connect" />
                            </children>
                         </AnchorPane>

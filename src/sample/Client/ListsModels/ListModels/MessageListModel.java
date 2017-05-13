@@ -15,28 +15,41 @@ import javafx.scene.layout.HBox;
  * @author Hate
  */
 public class MessageListModel extends HBox{
-    private ImageView Avatar = new ImageView();
-    private Label nickName = new Label();
+    private ImageView Avatar;
+    private Label nickName;
     private Label MSG = new Label();
 
-    public MessageListModel() {
-        Avatar.setFitHeight(30);
-        Avatar.setFitWidth(30);
-        nickName.setMinWidth(30);
-        MSG.setMaxWidth(250);
-        MSG.setWrapText(true);
-        getChildren().addAll(Avatar, nickName, MSG);
+    public MessageListModel(ImageView Avatar, Label nickName, String MSG) {
+        this.Avatar = Avatar;
+        this.nickName = nickName;
+        this.MSG.setText(MSG);
+        this.Avatar.setFitHeight(30);
+        this.Avatar.setFitWidth(30);
+        this.nickName.setMinWidth(30);
+        this.MSG.setMaxWidth(250);
+        this.MSG.setWrapText(true);
+        getChildren().addAll(this.Avatar, this.nickName, this.MSG);
     }
     
-    public void setAvatar(Image avatar){
+    public void setAvatarImage(Image avatar){
         this.Avatar.setImage(avatar);
     }
     
-    public void setNickName(String nickName){
+    public void setNickNameString(String nickName){
         this.nickName.setText(nickName);
     }
     
     public void setMessage(String MSG){
         this.MSG.setText(MSG);
     }
+
+    public void setAvatar(ImageView Avatar) {
+        this.Avatar = Avatar;
+    }
+
+    public void setNickName(Label nickName) {
+        this.nickName = nickName;
+    }
+    
+    
 }

@@ -25,6 +25,10 @@ public class ClientData implements Serializable {
         this.nickName = nickName;
         this.password = password;
     }
+    
+    public ClientData(String id){
+        this.id = id;
+    }
 
     public ClientData(Image avatar, String id, String nickName) {
         this.avatar = avatar;
@@ -59,7 +63,7 @@ public class ClientData implements Serializable {
         return signUp;
     }
 
-    public Image getAvatar() {
+    public Image getAvatarImage() {
         return avatar;
     }
 
@@ -83,7 +87,7 @@ public class ClientData implements Serializable {
         this.eMail = eMail;
     }
 
-    public String getNickName() {
+    public String getNickNameString() {
         return nickName;
     }
 

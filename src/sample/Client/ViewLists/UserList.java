@@ -12,6 +12,7 @@ import sample.Client.ListsModels.ListModels.UserListModel;
 import sample.User;
 
 import java.util.ArrayList;
+import javafx.scene.image.ImageView;
 
 /**
  * @author Hate
@@ -19,16 +20,13 @@ import java.util.ArrayList;
 public class UserList {
     private ObservableList<UserListModel> users = FXCollections.observableArrayList();
     UserListModel ULM;
-    private Image DefaultImage = new Image("/sample/resources/empty_user.jpg");
+    private final Image DefaultImage = new Image("/sample/resources/empty_user.jpg");
 
     public void add(User user) {
-        ULM = new UserListModel(user.getId());
-        if (user.getAvatar() != null) {
-            ULM.setAvatar(user.getAvatar());
-        } else {
-            ULM.setAvatar(DefaultImage);
+        ULM = new UserListModel(user.getId(), user.getAvatar(), user.getNickName());
+        if (user.getAvatarImage() == null) {
+            ULM.setAvatarImage(DefaultImage);
         }
-        ULM.setNickName(user.getNickName());
         users.add(ULM);
     }
 
@@ -48,7 +46,7 @@ public class UserList {
     public User getUserById(String id) {
         for (UserListModel user : users) {
             if (user.getUserId().equalsIgnoreCase(id)) {
-                return new User(user.getAvatar(), id, user.getNickName());
+                return new User(user.getAvatarImage(), id, user.getNickNameString());
             }
         }
         return null;
